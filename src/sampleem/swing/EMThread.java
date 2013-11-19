@@ -30,7 +30,7 @@ public class EMThread extends Thread {
     }
 
     public void run() {
-        System.out.println("Starting EM iterations");
+        view.DebugMessage("Starting EM iterations");
 
         view.CalculateExpectation();
 
@@ -46,7 +46,7 @@ public class EMThread extends Thread {
             double oldCost = view.getM_Cost();
 
             // Do one Expectation-Maximization iteration
-            System.out.println("iterationNumber: " + iterationNumber);
+            view.DebugMessage("iterationNumber: " + iterationNumber);
             view.CalculateMaximization();
             view.CalculateExpectation();
 
@@ -59,15 +59,15 @@ public class EMThread extends Thread {
             // Check if we have converged
             if (view.getM_Cost() > oldCost) {
                 // Going uphill due to numerical errors
-                System.out.println("Going uphill");
-                System.out.println("oldCost: " + oldCost);
-                System.out.println("m_Cost: " + view.getM_Cost());
+                view.DebugMessage("Going uphill");
+                view.DebugMessage("oldCost: " + oldCost);
+                view.DebugMessage("m_Cost: " + view.getM_Cost());
                 m_StopRequested = true;
             } else if (((oldCost - view.getM_Cost()) / (oldCost + view.getM_Cost()) * 2) <= 1e-9) {
                 // Converged
-                System.out.println("Converged: " + ((oldCost - view.getM_Cost()) / (oldCost + view.getM_Cost()) * 2));
-                System.out.println("oldCost: " + oldCost);
-                System.out.println("m_Cost: " + view.getM_Cost());
+                view.DebugMessage("Converged: " + ((oldCost - view.getM_Cost()) / (oldCost + view.getM_Cost()) * 2));
+                view.DebugMessage("oldCost: " + oldCost);
+                view.DebugMessage("m_Cost: " + view.getM_Cost());
                 m_StopRequested = true;
             }
 

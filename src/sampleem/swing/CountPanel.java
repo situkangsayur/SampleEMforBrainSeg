@@ -39,6 +39,7 @@ import javax.swing.JTextField;
 import sampleem.PVEM;
 import sampleem.XYPlot;
 import sampleem.swing.listener.Listener;
+import sun.nio.cs.MS1250;
 
 /**
  *
@@ -91,9 +92,7 @@ public class CountPanel extends javax.swing.JPanel implements ActionListener, Li
         if (urlDataset == null) {
             urlDataset = new ArrayList<DataSetEntity>();
         }
-
-        loadData();
-
+//loadData();
         result = new ResultEntity();
         /*
          for (int i = 1;; i++) {
@@ -101,7 +100,7 @@ public class CountPanel extends javax.swing.JPanel implements ActionListener, Li
          if (imageFileName == null) {
          break;
          }
-         System.out.println("imageFileName" + i + ": " + imageFileName);
+         DebugMessage("imageFileName" + i + ": " + imageFileName);
          Image image = getImage(m_BaseURL, imageFileName);
          m_Images.add(image);
 
@@ -117,11 +116,11 @@ public class CountPanel extends javax.swing.JPanel implements ActionListener, Li
          //     String algorithmToUse = getParameter( "algorithmToUse" );
          //     if ( algorithmToUse != null )
          //       { 
-         //       System.out.println( "algorithmToUse " + algorithmToUse );
+         //       DebugMessage( "algorithmToUse " + algorithmToUse );
          //       String compareString = "PoorMansAlgorithm";
          //       if ( algorithmToUse.matches( compareString ) )
          //         {
-         //         System.out.println( "Using the poor man's algorithm" );
+         //         DebugMessage( "Using the poor man's algorithm" );
          //         m_DoTheRealThing = false;
          //         }
          //       }
@@ -139,6 +138,8 @@ public class CountPanel extends javax.swing.JPanel implements ActionListener, Li
 
          this.SetImage(m_ImageChoice.getSelectedIndex());
          */
+
+        System.out.println("" + panelHistogram.getX() + " ; " + panelHistogram.getY());
     }
 
     /**
@@ -174,10 +175,8 @@ public class CountPanel extends javax.swing.JPanel implements ActionListener, Li
         comboImage = new com.widget.karisma.face.OvalCombobox();
         subGaussian = new javax.swing.JCheckBox();
         panelHistogram = new sampleem.swing.HistogramView();
+        buttonStop = new com.karisma.widget.gradienbutton.ButtonGradient();
         panelWhiteBorder4 = new com.widget.karisma.container.PanelWhiteBorder();
-        imageOtak1 = new javax.swing.JLabel();
-        imageOtak2 = new javax.swing.JLabel();
-        imageOtak3 = new javax.swing.JLabel();
         panelWhiteBorder6 = new com.widget.karisma.container.PanelWhiteBorder();
         imgRest1 = new javax.swing.JLabel();
         imgRest2 = new javax.swing.JLabel();
@@ -197,8 +196,18 @@ public class CountPanel extends javax.swing.JPanel implements ActionListener, Li
         panelWhiteBorder2.setPreferredSize(new java.awt.Dimension(823, 140));
 
         textFieldMean0.setText("0");
+        textFieldMean0.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                textFieldMean0ActionPerformed(evt);
+            }
+        });
 
         textFieldSigma0.setText("0");
+        textFieldSigma0.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                textFieldSigma0ActionPerformed(evt);
+            }
+        });
 
         textFieldPure0.setText("0");
         textFieldPure0.addActionListener(new java.awt.event.ActionListener() {
@@ -208,10 +217,25 @@ public class CountPanel extends javax.swing.JPanel implements ActionListener, Li
         });
 
         textFieldPvPrior0.setText("0");
+        textFieldPvPrior0.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                textFieldPvPrior0ActionPerformed(evt);
+            }
+        });
 
         textFieldMean1.setText("0");
+        textFieldMean1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                textFieldMean1ActionPerformed(evt);
+            }
+        });
 
         textFieldSigma1.setText("0");
+        textFieldSigma1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                textFieldSigma1ActionPerformed(evt);
+            }
+        });
 
         textFieldPure1.setText("0");
         textFieldPure1.addActionListener(new java.awt.event.ActionListener() {
@@ -221,10 +245,25 @@ public class CountPanel extends javax.swing.JPanel implements ActionListener, Li
         });
 
         textFieldPvPrior1.setText("0");
+        textFieldPvPrior1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                textFieldPvPrior1ActionPerformed(evt);
+            }
+        });
 
         textFieldMean2.setText("0");
+        textFieldMean2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                textFieldMean2ActionPerformed(evt);
+            }
+        });
 
         textFieldSigma2.setText("0");
+        textFieldSigma2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                textFieldSigma2ActionPerformed(evt);
+            }
+        });
 
         textFieldPure2.setText("0");
         textFieldPure2.addActionListener(new java.awt.event.ActionListener() {
@@ -234,6 +273,11 @@ public class CountPanel extends javax.swing.JPanel implements ActionListener, Li
         });
 
         textFieldPvPrior2.setText("0");
+        textFieldPvPrior2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                textFieldPvPrior2ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout panelWhiteBorder2Layout = new javax.swing.GroupLayout(panelWhiteBorder2);
         panelWhiteBorder2.setLayout(panelWhiteBorder2Layout);
@@ -252,7 +296,7 @@ public class CountPanel extends javax.swing.JPanel implements ActionListener, Li
                     .addComponent(textFieldPure1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(textFieldSigma1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(textFieldMean1, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 168, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 169, Short.MAX_VALUE)
                 .addGroup(panelWhiteBorder2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(textFieldPvPrior2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(textFieldPure2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -320,6 +364,11 @@ public class CountPanel extends javax.swing.JPanel implements ActionListener, Li
                 comboImageItemStateChanged(evt);
             }
         });
+        comboImage.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                comboImageActionPerformed(evt);
+            }
+        });
 
         subGaussian.setForeground(new java.awt.Color(255, 255, 255));
         subGaussian.setSelected(true);
@@ -330,12 +379,19 @@ public class CountPanel extends javax.swing.JPanel implements ActionListener, Li
         panelHistogram.setLayout(panelHistogramLayout);
         panelHistogramLayout.setHorizontalGroup(
             panelHistogramLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 447, Short.MAX_VALUE)
+            .addGap(0, 494, Short.MAX_VALUE)
         );
         panelHistogramLayout.setVerticalGroup(
             panelHistogramLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 210, Short.MAX_VALUE)
         );
+
+        buttonStop.setText("Stop");
+        buttonStop.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonStopActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout panelWhiteBorder3Layout = new javax.swing.GroupLayout(panelWhiteBorder3);
         panelWhiteBorder3.setLayout(panelWhiteBorder3Layout);
@@ -346,21 +402,18 @@ public class CountPanel extends javax.swing.JPanel implements ActionListener, Li
                 .addGroup(panelWhiteBorder3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 279, Short.MAX_VALUE)
                     .addComponent(comboImage, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(panelWhiteBorder3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(panelWhiteBorder3Layout.createSequentialGroup()
-                        .addGap(160, 160, 160)
+                        .addComponent(buttonStart, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(buttonStop, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
                         .addComponent(subGaussian)
-                        .addGap(91, 91, 91)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(buttonInit, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelWhiteBorder3Layout.createSequentialGroup()
-                        .addGap(42, 42, 42)
-                        .addComponent(panelHistogram, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(28, Short.MAX_VALUE))
-            .addGroup(panelWhiteBorder3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(panelWhiteBorder3Layout.createSequentialGroup()
-                    .addGap(342, 342, 342)
-                    .addComponent(buttonStart, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(365, Short.MAX_VALUE)))
+                    .addComponent(panelHistogram, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         panelWhiteBorder3Layout.setVerticalGroup(
             panelWhiteBorder3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -368,36 +421,24 @@ public class CountPanel extends javax.swing.JPanel implements ActionListener, Li
                 .addContainerGap()
                 .addGroup(panelWhiteBorder3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(panelWhiteBorder3Layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 220, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 218, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(panelWhiteBorder3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(comboImage, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(buttonInit, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(buttonStop, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(buttonStart, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(panelWhiteBorder3Layout.createSequentialGroup()
                         .addComponent(panelHistogram, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addGroup(panelWhiteBorder3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(buttonInit, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(panelWhiteBorder3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(comboImage, javax.swing.GroupLayout.DEFAULT_SIZE, 46, Short.MAX_VALUE)
-                        .addComponent(subGaussian)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(subGaussian)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
-            .addGroup(panelWhiteBorder3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(panelWhiteBorder3Layout.createSequentialGroup()
-                    .addGap(244, 244, 244)
-                    .addComponent(buttonStart, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
 
         panelWhiteBorder1.add(panelWhiteBorder3, java.awt.BorderLayout.PAGE_START);
 
         panelWhiteBorder4.setPreferredSize(new java.awt.Dimension(823, 270));
-
-        imageOtak1.setForeground(new java.awt.Color(255, 255, 255));
-        imageOtak1.setText("                          IMAGE SATU");
-
-        imageOtak2.setForeground(new java.awt.Color(255, 255, 255));
-        imageOtak2.setText("                          IMAGE SATU");
-
-        imageOtak3.setForeground(new java.awt.Color(255, 255, 255));
-        imageOtak3.setText("                          IMAGE SATU");
 
         panelWhiteBorder6.setPreferredSize(new java.awt.Dimension(823, 270));
 
@@ -459,33 +500,16 @@ public class CountPanel extends javax.swing.JPanel implements ActionListener, Li
         panelWhiteBorder4Layout.setHorizontalGroup(
             panelWhiteBorder4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelWhiteBorder4Layout.createSequentialGroup()
-                .addGap(47, 47, 47)
-                .addComponent(imageOtak1, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 115, Short.MAX_VALUE)
-                .addComponent(imageOtak2, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(88, 88, 88)
-                .addComponent(imageOtak3, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(66, 66, 66))
-            .addGroup(panelWhiteBorder4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(panelWhiteBorder4Layout.createSequentialGroup()
-                    .addGap(0, 0, Short.MAX_VALUE)
-                    .addComponent(panelWhiteBorder6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(0, 0, Short.MAX_VALUE)))
+                .addGap(0, 1, Short.MAX_VALUE)
+                .addComponent(panelWhiteBorder6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         panelWhiteBorder4Layout.setVerticalGroup(
             panelWhiteBorder4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelWhiteBorder4Layout.createSequentialGroup()
-                .addGap(21, 21, 21)
-                .addGroup(panelWhiteBorder4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(imageOtak1, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(imageOtak2, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(imageOtak3, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(141, Short.MAX_VALUE))
-            .addGroup(panelWhiteBorder4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(panelWhiteBorder4Layout.createSequentialGroup()
-                    .addGap(0, 0, Short.MAX_VALUE)
-                    .addComponent(panelWhiteBorder6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(0, 0, Short.MAX_VALUE)))
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(panelWhiteBorder6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
         panelWhiteBorder1.add(panelWhiteBorder4, java.awt.BorderLayout.PAGE_END);
@@ -499,29 +523,40 @@ public class CountPanel extends javax.swing.JPanel implements ActionListener, Li
 
     private void textFieldPure0ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textFieldPure0ActionPerformed
         // TODO add your handling code here:
+        double newPrior = Double.parseDouble(textFieldPure0.getText()) / 100;
+        this.SetPrior(0, newPrior);
     }//GEN-LAST:event_textFieldPure0ActionPerformed
 
     private void textFieldPure1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textFieldPure1ActionPerformed
         // TODO add your handling code here:
+        double newPrior = Double.parseDouble(textFieldPure1.getText()) / 100;
+        this.SetPrior(1, newPrior);
     }//GEN-LAST:event_textFieldPure1ActionPerformed
 
     private void textFieldPure2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textFieldPure2ActionPerformed
         // TODO add your handling code here:
+        double newPrior = Double.parseDouble(textFieldPure2.getText()) / 100;
+        this.SetPrior(2, newPrior);
     }//GEN-LAST:event_textFieldPure2ActionPerformed
 
     private void buttonInitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonInitActionPerformed
         // TODO add your handling code here:
+        this.StopEM();
+        this.SetInitialParametersToDefault();
+        repaint();
     }//GEN-LAST:event_buttonInitActionPerformed
 
     private void buttonStartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonStartActionPerformed
         // TODO add your handling code here:
+        this.StartEM();
+        repaint();
     }//GEN-LAST:event_buttonStartActionPerformed
 
     private void comboImageItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_comboImageItemStateChanged
         // TODO add your handling code here:
-        System.out.println(comboImage.getSelectedIndex() + " : " + comboImage.getSelectedItem());
+        DebugMessage(comboImage.getSelectedIndex() + " : " + comboImage.getSelectedItem());
         try {
-            citraSrc = citraSrc = ImageIO.read(new File(urlDataset.get(comboImage.getSelectedIndex()).getUri()));
+            citraSrc = ImageIO.read(new File(urlDataset.get(comboImage.getSelectedIndex()).getUri()));
         } catch (IOException ex) {
             ex.printStackTrace();
         }
@@ -529,15 +564,82 @@ public class CountPanel extends javax.swing.JPanel implements ActionListener, Li
 //            temp = citraDua.getScaledInstance(drawPanel1.getWidth(), drawPanel1.getHeight(), citraDua.SCALE_FAST);
         imageOtak.setIcon(new ImageIcon(citraSrc));
     }//GEN-LAST:event_comboImageItemStateChanged
+
+    private void textFieldMean0ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textFieldMean0ActionPerformed
+        // TODO add your handling code here:
+        m_Means[0] = Double.parseDouble(textFieldMean0.getText());
+        this.CalculateExpectation();
+        repaint();
+    }//GEN-LAST:event_textFieldMean0ActionPerformed
+
+    private void textFieldMean1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textFieldMean1ActionPerformed
+        // TODO add your handling code here:
+        m_Means[1] = Double.parseDouble(textFieldMean1.getText());
+        this.CalculateExpectation();
+        repaint();
+    }//GEN-LAST:event_textFieldMean1ActionPerformed
+
+    private void textFieldMean2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textFieldMean2ActionPerformed
+        // TODO add your handling code here:
+        m_Means[2] = Double.parseDouble(textFieldMean2.getText());
+        this.CalculateExpectation();
+        repaint();
+    }//GEN-LAST:event_textFieldMean2ActionPerformed
+
+    private void textFieldSigma0ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textFieldSigma0ActionPerformed
+        // TODO add your handling code here:
+        m_Variances[0] = Math.pow(Double.parseDouble(textFieldSigma0.getText()), 2);
+        this.CalculateExpectation();
+        repaint();
+    }//GEN-LAST:event_textFieldSigma0ActionPerformed
+
+    private void textFieldSigma1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textFieldSigma1ActionPerformed
+        // TODO add your handling code here:
+        m_Variances[1] = Math.pow(Double.parseDouble(textFieldSigma1.getText()), 2);
+        this.CalculateExpectation();
+        repaint();
+    }//GEN-LAST:event_textFieldSigma1ActionPerformed
+
+    private void textFieldSigma2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textFieldSigma2ActionPerformed
+        // TODO add your handling code here:
+        m_Variances[2] = Math.pow(Double.parseDouble(textFieldSigma2.getText()), 2);
+        this.CalculateExpectation();
+        repaint();
+    }//GEN-LAST:event_textFieldSigma2ActionPerformed
+
+    private void textFieldPvPrior0ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textFieldPvPrior0ActionPerformed
+        // TODO add your handling code here:
+        double newPrior = Double.parseDouble(textFieldPvPrior0.getText()) / 100;
+        this.SetPrior(3, newPrior);
+    }//GEN-LAST:event_textFieldPvPrior0ActionPerformed
+
+    private void textFieldPvPrior1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textFieldPvPrior1ActionPerformed
+        // TODO add your handling code here:
+        double newPrior = Double.parseDouble(textFieldPvPrior1.getText()) / 100;
+        this.SetPrior(4, newPrior);
+    }//GEN-LAST:event_textFieldPvPrior1ActionPerformed
+
+    private void textFieldPvPrior2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textFieldPvPrior2ActionPerformed
+        // TODO add your handling code here:
+        double newPrior = Double.parseDouble(textFieldPvPrior2.getText()) / 100;
+        this.SetPrior(5, newPrior);
+    }//GEN-LAST:event_textFieldPvPrior2ActionPerformed
+
+    private void comboImageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboImageActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_comboImageActionPerformed
+
+    private void buttonStopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonStopActionPerformed
+        // TODO add your handling code here:
+        StopEM();
+    }//GEN-LAST:event_buttonStopActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.widget.karisma.container.BluePanel bluePanel1;
     private com.karisma.widget.gradienbutton.ButtonGradient buttonInit;
     private com.karisma.widget.gradienbutton.ButtonGradient buttonStart;
+    private com.karisma.widget.gradienbutton.ButtonGradient buttonStop;
     private com.widget.karisma.face.OvalCombobox comboImage;
     private javax.swing.JLabel imageOtak;
-    private javax.swing.JLabel imageOtak1;
-    private javax.swing.JLabel imageOtak2;
-    private javax.swing.JLabel imageOtak3;
     private javax.swing.JLabel imgRest1;
     private javax.swing.JLabel imgRest2;
     private javax.swing.JLabel imgRest3;
@@ -581,7 +683,7 @@ public class CountPanel extends javax.swing.JPanel implements ActionListener, Li
          this.SetInitialParametersToDefault();
          paintGraph();
          } else if (e.getSource() == m_DownsamplingFactorTextField) {
-         //System.out.println( "Retrieve mean0" );
+         //DebugMessage( "Retrieve mean0" );
          try {
          m_DownsamplingFactor = Integer.parseInt(m_DownsamplingFactorTextField.getText());
          } catch (NumberFormatException exception) {
@@ -681,7 +783,7 @@ public class CountPanel extends javax.swing.JPanel implements ActionListener, Li
 //            }
 
             try {
-                System.out.println(i + ":" + baseUrl.toString() + "/imageFIleName" + i);
+                DebugMessage(i + ":" + baseUrl.toString() + "/imageFIleName" + i);
                 citraSrc = ImageIO.read(new File(new URI(baseUrl.toString() + "/imageFIleName" + i + ".jpg")));
                 DataSetEntity temp = new DataSetEntity();
                 temp.setName("Image-" + i);
@@ -691,12 +793,12 @@ public class CountPanel extends javax.swing.JPanel implements ActionListener, Li
 
             } catch (IOException ex) {
                 ex.printStackTrace();
-                System.out.println(ex.getMessage());
+                DebugMessage(ex.getMessage());
                 break;
             } catch (URISyntaxException ex) {
                 Logger.getLogger(CountPanel.class.getName()).log(Level.SEVERE, null, ex);
             }
-//            System.out.println("imageFileName" + i + ": " + imageFileName);
+//            DebugMessage("imageFileName" + i + ": " + imageFileName);
 //            Image image = getImage(m_BaseURL, imageFileName);
             vImages.add(citraSrc);
 //            m_Images.add(image);
@@ -799,8 +901,8 @@ public class CountPanel extends javax.swing.JPanel implements ActionListener, Li
                 m_Minimum = nPixelData[ i];
             }
         }
-        System.out.println("valMinimum: " + m_Minimum);
-        System.out.println("valMaximum: " + m_Maximum);
+        DebugMessage("valMinimum: " + m_Minimum);
+        DebugMessage("valMaximum: " + m_Maximum);
 
 
         // Build histogram
@@ -878,10 +980,10 @@ public class CountPanel extends javax.swing.JPanel implements ActionListener, Li
 
 
         // Depending on the contrast, swap initial means to keep the labels in the applet (WM/GM/CSF) relevant
-        System.out.println("Adjusting for contrast " + contrast);
+        DebugMessage("Adjusting for contrast " + contrast);
         String compareString = "imageFileName2";
         if (contrast.matches(compareString)) {
-            System.out.println("swapping");
+            DebugMessage("swapping");
             double tmp = m_Means[ 0];
             m_Means[ 0] = m_Means[ 2];
             m_Means[ 2] = tmp;
@@ -976,7 +1078,7 @@ public class CountPanel extends javax.swing.JPanel implements ActionListener, Li
             m_Cost -= Math.log(m_Evidence[ i - m_Minimum]) * histogram[ i - m_Minimum];
         }
         m_Cost *= numberOfActivePixels;
-        System.out.println("Current cost: " + m_Cost);
+        DebugMessage("Current cost: " + m_Cost);
     }
 
     public void CalculateMaximization() {
@@ -1173,7 +1275,7 @@ public class CountPanel extends javax.swing.JPanel implements ActionListener, Li
         //m_CostLabel.setText( "- log-likelihood: " + m_Cost );
     }
 
-    public void DrawClassification(Graphics g, double[] likelihoodTimesPrior, int x, int y, int width, int height) {
+    public void DrawClassification(Graphics g, double[] likelihoodTimesPrior, int x, int y, int width, int height, int label) {
         int[] pix = new int[numberOfPixels];
         for (int i = 0; i < numberOfPixels; i++) {
             int red;
@@ -1191,18 +1293,49 @@ public class CountPanel extends javax.swing.JPanel implements ActionListener, Li
             pix[ i] = (alpha << 24) | (red << 16) | (green << 8) | blue;
         }
         Image img = createImage(new MemoryImageSource(tempWidth, tempHeight, pix, 0, tempWidth));
-        g.drawImage(img, x, y, width, height, this);
+//        g.drawImage(img, x, y, width, height, this);
+
+        BufferedImage bfrImage = new BufferedImage(img.getWidth(null), img.getHeight(null), BufferedImage.TYPE_INT_RGB);
+        Graphics bg = bfrImage.getGraphics();
+        bg.drawImage(img, x, y, width, height, this);
+        switch (label) {
+            case 1:
+                imgRest1.setText("");
+                imgRest1.setIcon(new ImageIcon(bfrImage));
+                break;
+            case 2:
+                imgRest2.setText("");
+                imgRest2.setIcon(new ImageIcon(bfrImage));
+                break;
+            case 3:
+                imgRest3.setText("");
+                imgRest3.setIcon(new ImageIcon(bfrImage));
+                break;
+            case 4:
+                imgRest4.setText("");
+                imgRest4.setIcon(new ImageIcon(bfrImage));
+                break;
+            case 5:
+                imgRest5.setText("");
+                imgRest5.setIcon(new ImageIcon(bfrImage));
+                break;
+            case 6:
+                imgRest6.setText("");
+                imgRest6.setIcon(new ImageIcon(bfrImage));
+                break;
+        }
     }
 
     public void DrawClassifications(Graphics g) {
         // Draw pure classification images
         for (int classNumber = 0; classNumber < numberOfClasses; classNumber++) {
             double[] likelihoodTimesPrior = (double[]) m_PureLikelihoodTimesPriors.get(classNumber);
-            this.DrawClassification(g, likelihoodTimesPrior, 60 + classNumber * 200, 540, 150, 150);
+            this.DrawClassification(g, likelihoodTimesPrior, 60 + classNumber * 200, 540, 150, 150, classNumber + 1);
         }
 
         // Draw PV classification images
         int pvClassNumber = -1;
+        int pos = 1;
         for (int classNumber1 = 0; classNumber1 < numberOfClasses; classNumber1++) {
             for (int classNumber2 = classNumber1 + 1; classNumber2 < numberOfClasses; classNumber2++) {
                 pvClassNumber++;
@@ -1217,17 +1350,22 @@ public class CountPanel extends javax.swing.JPanel implements ActionListener, Li
                         summedLikelihoodTimesPrior[ i - m_Minimum] += likelihoodTimesPrior[ i - m_Minimum];
                     }
                 }
-
+//                System.out.println("class number 2 : " + classNumber2 + " " + pos);
                 // Now draw 
-                this.DrawClassification(g, summedLikelihoodTimesPrior, 60 + pvClassNumber * 200, 720, 150, 150);
+                this.DrawClassification(g, summedLikelihoodTimesPrior, 60 + pvClassNumber * 200, 720, 150, 150, pos + 3);
+                pos++;
             }
         }
 
     }
-    private final int m_PlotX = 260;
+//     private final int m_PlotWidth = panelHistogram.getPreferredSize().width;
+//    private final int m_PlotHeight = panelHistogram.getPreferredSize().height; 494, 210
+    private final int m_PlotX = 300;
     private final int m_PlotY = 20;
-    private final int m_PlotWidth = 300;
-    private final int m_PlotHeight = 240;
+//    private final int m_PlotX = panelHistogram.getX();
+//    private final int m_PlotY = panelHistogram.getY();
+    private final int m_PlotWidth = 494;
+    private final int m_PlotHeight = 210;
     private Image m_PlotBuffer;
     private Stroke m_HistogramStroke;
     private Color m_HistogramColor;
@@ -1384,7 +1522,12 @@ public class CountPanel extends javax.swing.JPanel implements ActionListener, Li
         m_SubGaussianStroke = m_HistogramStroke;
         m_SubGaussianColor = new Color(64, 192, 64);
 
+
+//        m_PlotBuffer = createImage(m_PlotWidth, m_PlotHeighth);
         m_PlotBuffer = createImage(m_PlotWidth, m_PlotHeight);
+        if (m_PlotBuffer == null) {
+            DebugMessage("Buffer plot == null");
+        }
     }
     private EMThread m_Solver;
 
@@ -1393,12 +1536,13 @@ public class CountPanel extends javax.swing.JPanel implements ActionListener, Li
         if (m_Solver != null) {
             // 
             if (m_Solver.isAlive()) {
-                System.out.println("Have already a thread doing our work");
+                DebugMessage("Have already a thread doing our work");
                 return;
             }
         }
 
         m_Solver = new EMThread();
+        m_Solver.setView(this);
     }
 
     public double getM_Cost() {
@@ -1406,7 +1550,7 @@ public class CountPanel extends javax.swing.JPanel implements ActionListener, Li
     }
 
     public void StopEM() {
-        System.out.println("Trying to stop the solver");
+        DebugMessage("Trying to stop the solver");
 
         if (m_Solver == null) {
             return;
@@ -1444,9 +1588,15 @@ public class CountPanel extends javax.swing.JPanel implements ActionListener, Li
 //        graph1D = panelHistogram.getGraph();
         graph1D = new BufferedImage(panelHistogram.getPreferredSize().width, panelHistogram.getPreferredSize().height, BufferedImage.TYPE_INT_RGB).createGraphics();
         if (graph1D == null) {
-            System.out.println("graphnya null gan");
+            DebugMessage("graphnya null gan");
         }
         DrawChangingElements(graph1D);
         panelHistogram.repaint();
+//        panelHistogram.revalidate();
+    }
+
+    public void DebugMessage(String message) {
+        // Comment this out for final release of the Applet
+        //DebugMessage( message );
     }
 }

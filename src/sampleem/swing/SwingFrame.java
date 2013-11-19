@@ -15,6 +15,7 @@ public class SwingFrame extends javax.swing.JFrame {
      */
     public SwingFrame() {
         initComponents();
+        countPanel2.loadData();
     }
 
     /**
@@ -26,10 +27,10 @@ public class SwingFrame extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        countPanel1 = new sampleem.swing.CountPanel();
+        countPanel2 = new sampleem.swing.CountPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        getContentPane().add(countPanel1, java.awt.BorderLayout.CENTER);
+        getContentPane().add(countPanel2, java.awt.BorderLayout.CENTER);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -69,6 +70,6 @@ public class SwingFrame extends javax.swing.JFrame {
         });
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private sampleem.swing.CountPanel countPanel1;
+    private sampleem.swing.CountPanel countPanel2;
     // End of variables declaration//GEN-END:variables
 }
