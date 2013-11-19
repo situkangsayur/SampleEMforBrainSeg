@@ -46,7 +46,7 @@ import sun.nio.cs.MS1250;
  *
  * @author hendri
  */
-public class CountPanel extends javax.swing.JPanel implements ActionListener, Listener {
+public class CountPanel extends javax.swing.JPanel implements Listener {
 
     //=======================================================
     private JTextField m_Mean1TextField;
@@ -61,9 +61,9 @@ public class CountPanel extends javax.swing.JPanel implements ActionListener, Li
 //    private JTextField m_PVPrior1TextField;
 //    private JTextField m_PVPrior2TextField;
     //private Label m_CostLabel;
-    private JTextField m_DownsamplingFactorTextField;
-    private JCheckBox m_ShowSubGaussiansCheckbox;
-    private Choice m_ImageChoice;
+//    private JTextField m_DownsamplingFactorTextField;
+//    private JCheckBox m_ShowSubGaussiansCheckbox;
+//    private Choice m_ImageChoice;
 //    private EMThread m_Solver = null;
     private MediaTracker media;
     private URL baseUrl;
@@ -93,54 +93,8 @@ public class CountPanel extends javax.swing.JPanel implements ActionListener, Li
         if (urlDataset == null) {
             urlDataset = new ArrayList<DataSetEntity>();
         }
-//loadData();
+//        loadData();
         result = new ResultEntity();
-        /*
-         for (int i = 1;; i++) {
-         //            String imageFileName = getParameter("imageFileName" + i);
-         if (imageFileName == null) {
-         break;
-         }
-         DebugMessage("imageFileName" + i + ": " + imageFileName);
-         Image image = getImage(m_BaseURL, imageFileName);
-         m_Images.add(image);
-
-         // tell the MediaTracker to keep an eye on this image, and give it an ID;
-         m_MediaTracker.addImage(image, i);
-
-         // Also read the contrast and the description
-         m_Contrasts.add(getParameter("contrast" + i));
-         m_Descriptions.add(getParameter("description" + i));
-         }
-
-         //     // Check whether or not we do The Real Thing or just the Poor Man's approximation
-         //     String algorithmToUse = getParameter( "algorithmToUse" );
-         //     if ( algorithmToUse != null )
-         //       { 
-         //       DebugMessage( "algorithmToUse " + algorithmToUse );
-         //       String compareString = "PoorMansAlgorithm";
-         //       if ( algorithmToUse.matches( compareString ) )
-         //         {
-         //         DebugMessage( "Using the poor man's algorithm" );
-         //         m_DoTheRealThing = false;
-         //         }
-         //       }
-
-
-         // Now tell the mediaTracker to stop the applet execution
-         // (in this example don't paint) until the images are fully loaded.
-         // Must be in a try catch block.
-         try {
-         m_MediaTracker.waitForAll();
-         } catch (InterruptedException e) {
-         }
-
-         this.SetUpGUI();
-
-         this.SetImage(m_ImageChoice.getSelectedIndex());
-         */
-
-        System.out.println("" + panelHistogram.getX() + " ; " + panelHistogram.getY());
     }
 
     /**
@@ -662,6 +616,21 @@ public class CountPanel extends javax.swing.JPanel implements ActionListener, Li
 
     private void textFieldDownSamplingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textFieldDownSamplingActionPerformed
         // TODO add your handling code here:
+        try {
+            m_DownsamplingFactor = Integer.parseInt(textFieldDownSampling.getText());
+        } catch (NumberFormatException exception) {
+            //Use default value.
+            m_DownsamplingFactor = 2;
+        }
+        if (m_DownsamplingFactor < 1) {
+            m_DownsamplingFactor = 1;
+        } else if (m_DownsamplingFactor > 5) // This limitation is not theoretically necessary, but makes the applet fool proof. A factor of 5 already results in 24 PV fractions!
+        {
+            m_DownsamplingFactor = 5;
+        }
+        textFieldDownSampling.setText("" + m_DownsamplingFactor);
+        this.SetInitialParametersToDefault();
+        repaint();
     }//GEN-LAST:event_textFieldDownSamplingActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private com.widget.karisma.container.BluePanel bluePanel1;
@@ -701,81 +670,6 @@ public class CountPanel extends javax.swing.JPanel implements ActionListener, Li
     private com.widget.karisma.face.OvalTextField textFieldSigma2;
     // End of variables declaration//GEN-END:variables
 //    private EMAlgo emPanel;
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        /*
-         if (e.getSource() == m_StartButton) {
-         this.StartEM();
-         //paintGraph(); 
-         } else if (e.getSource() == m_StopButton) {
-         this.StopEM();
-         } else if (e.getSource() == m_ReinitializeButton) {
-         this.StopEM();
-         this.SetInitialParametersToDefault();
-         paintGraph();
-         } else if (e.getSource() == m_DownsamplingFactorTextField) {
-         //DebugMessage( "Retrieve mean0" );
-         try {
-         m_DownsamplingFactor = Integer.parseInt(m_DownsamplingFactorTextField.getText());
-         } catch (NumberFormatException exception) {
-         //Use default value.
-         m_DownsamplingFactor = 2;
-         }
-         if (m_DownsamplingFactor < 1) {
-         m_DownsamplingFactor = 1;
-         } else if (m_DownsamplingFactor > 5) // This limitation is not theoretically necessary, but makes the applet fool proof. A factor of 5 already results in 24 PV fractions!
-         {
-         m_DownsamplingFactor = 5;
-         }
-         m_DownsamplingFactorTextField.setText("" + m_DownsamplingFactor);
-         this.SetInitialParametersToDefault();
-         paintGraph();
-         } else if (e.getSource() == m_Mean0TextField) {
-         m_Means[ 0] = Double.parseDouble(m_Mean0TextField.getText());
-         this.CalculateExpectation();
-         paintGraph();
-         } else if (e.getSource() == m_Mean1TextField) {
-         m_Means[ 1] = Double.parseDouble(m_Mean1TextField.getText());
-         this.CalculateExpectation();
-         paintGraph();
-         } else if (e.getSource() == m_Mean2TextField) {
-         m_Means[ 2] = Double.parseDouble(m_Mean2TextField.getText());
-         this.CalculateExpectation();
-         paintGraph();
-         } else if (e.getSource() == m_Sigma0TextField) {
-         m_Variances[ 0] = Math.pow(Double.parseDouble(m_Sigma0TextField.getText()), 2);
-         this.CalculateExpectation();
-         paintGraph();
-         } else if (e.getSource() == m_Sigma1TextField) {
-         m_Variances[ 1] = Math.pow(Double.parseDouble(m_Sigma1TextField.getText()), 2);
-         this.CalculateExpectation();
-         paintGraph();
-         } else if (e.getSource() == m_Sigma2TextField) {
-         m_Variances[ 2] = Math.pow(Double.parseDouble(m_Sigma2TextField.getText()), 2);
-         this.CalculateExpectation();
-         paintGraph();
-         } else if (e.getSource() == m_PurePrior0TextField) {
-         double newPrior = Double.parseDouble(m_PurePrior0TextField.getText()) / 100;
-         this.SetPrior(0, newPrior);
-         } else if (e.getSource() == m_PurePrior1TextField) {
-         double newPrior = Double.parseDouble(m_PurePrior1TextField.getText()) / 100;
-         this.SetPrior(1, newPrior);
-         } else if (e.getSource() == m_PurePrior2TextField) {
-         double newPrior = Double.parseDouble(m_PurePrior2TextField.getText()) / 100;
-         this.SetPrior(2, newPrior);
-         } else if (e.getSource() == m_PVPrior0TextField) {
-         double newPrior = Double.parseDouble(m_PVPrior0TextField.getText()) / 100;
-         this.SetPrior(3, newPrior);
-         } else if (e.getSource() == m_PVPrior1TextField) {
-         double newPrior = Double.parseDouble(m_PVPrior1TextField.getText()) / 100;
-         this.SetPrior(4, newPrior);
-         } else if (e.getSource() == m_PVPrior2TextField) {
-         double newPrior = Double.parseDouble(m_PVPrior2TextField.getText()) / 100;
-         this.SetPrior(5, newPrior);
-         }
-         */
-    }
 
     @Override
     public void start(ResultEntity resultEntity) {
@@ -834,9 +728,9 @@ public class CountPanel extends javax.swing.JPanel implements ActionListener, Li
 //            Image image = getImage(m_BaseURL, imageFileName);
             vImages.add(citraSrc);
 //            m_Images.add(image);
-            Image image = citraSrc;
+//            Image image = citraSrc;
             // tell the MediaTracker to keep an eye on this image, and give it an ID;
-            media.addImage(image, i);
+            media.addImage(citraSrc, i);
 
             // Also read the contrast and the description
             vContrasts.add("imageFileName" + i);
@@ -845,20 +739,6 @@ public class CountPanel extends javax.swing.JPanel implements ActionListener, Li
 //            temp = citraDua.getScaledInstance(drawPanel1.getWidth(), drawPanel1.getHeight(), citraDua.SCALE_FAST);
             imageOtak.setIcon(new ImageIcon(citraSrc));
         }
-
-        //     // Check whether or not we do The Real Thing or just the Poor Man's approximation
-//     String algorithmToUse = getParameter( "algorithmToUse" );
-//     if ( algorithmToUse != null )
-//       { 
-//       DebugMessage( "algorithmToUse " + algorithmToUse );
-//       String compareString = "PoorMansAlgorithm";
-//       if ( algorithmToUse.matches( compareString ) )
-//         {
-//         DebugMessage( "Using the poor man's algorithm" );
-//         m_DoTheRealThing = false;
-//         }
-//       }
-
 
         // Now tell the mediaTracker to stop the applet execution
         // (in this example don't paint) until the images are fully loaded.
@@ -870,10 +750,12 @@ public class CountPanel extends javax.swing.JPanel implements ActionListener, Li
         }
 
         this.SetUpGUI();
-
+        DebugMessage(Integer.toString(comboImage.getSelectedIndex()));
         this.SetImage(comboImage.getSelectedIndex());
 
     }
+    
+    
     String contrast;
     Image tempImage;
     private int m_Minimum;
@@ -1304,7 +1186,7 @@ public class CountPanel extends javax.swing.JPanel implements ActionListener, Li
         textFieldPvPrior1.setText("" + 100 * m_PVPriors[ 1]);
         textFieldPvPrior2.setText("" + 100 * m_PVPriors[ 2]);
 
-        //m_CostLabel.setText( "- log-likelihood: " + m_Cost );
+//        m_CostLabel.setText( "- log-likelihood: " + m_Cost );
     }
 
     public void DrawClassification(Graphics g, double[] likelihoodTimesPrior, int x, int y, int width, int height, int label) {
@@ -1633,12 +1515,9 @@ public class CountPanel extends javax.swing.JPanel implements ActionListener, Li
     }
 
     public void itemStateChanged(ItemEvent e) {
-        if (e.getSource() == m_ShowSubGaussiansCheckbox) {
-            paintGraph();
-        } else if (e.getSource() == m_ImageChoice) {
-            this.StopEM();
-            this.SetImage(m_ImageChoice.getSelectedIndex());
-        }
+        this.StopEM();
+        this.SetImage(comboImage.getSelectedIndex());
+
     }
     private Graphics graph1D;
     private Graphics2D graph2D;
@@ -1655,12 +1534,13 @@ public class CountPanel extends javax.swing.JPanel implements ActionListener, Li
             DebugMessage("graphnya null gan");
         }
         DrawChangingElements(graph1D);
-        panelHistogram.repaint();
+//        panelHistogram.repaint();
 //        panelHistogram.revalidate();
     }
 
     public void DebugMessage(String message) {
         // Comment this out for final release of the Applet
         //DebugMessage( message );
+        System.out.println(message);
     }
 }
