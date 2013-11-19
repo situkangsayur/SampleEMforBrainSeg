@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-package sampleem;
 
 /*
  *
@@ -11,13 +6,19 @@ package sampleem;
  * Copyright 2007, Koen Van Leemput
  *
  */
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package sampleem.swing;
+
 import java.awt.*;
 import java.util.Vector;
 
 public class XYPlot {
 
     // Constructor
-    public XYPlot(int x, int y, int width, int height) {
+    XYPlot(int x, int y, int width, int height) {
         m_X = x;
         m_Y = y;
         m_Width = width;

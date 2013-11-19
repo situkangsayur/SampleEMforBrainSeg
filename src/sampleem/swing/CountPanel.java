@@ -1,6 +1,22 @@
 /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
+ * 
+ *  * The algorithm is described in the following paper:
+ *         K. Van Leemput, F. Maes, D. Vandermeulen, P. Suetens, 
+ *         A unifying framework for partial volume segmentation of brain MR images, 
+ *         IEEE transactions on medical imaging, vol. 22, no. 1, pp. 105-119, January 2003
+ *
+ * The full algorithm is more general than what's implemented here, as it allows for multiple channels and more sophisticated 
+ * spatial priors. 
+ * 
+ * This applet merely serves as a demonstration of the principle; hopefully it also convinces you that uniform 
+ * priors on partial volume mixing fractions are not necessarily a good idea. See the paper for a full discussion.
+ *
+ * Please do send me your comments and suggestions.
+ * 
+ * Copyright 2007, Koen Van Leemput
+ *
  */
 package sampleem.swing;
 
@@ -37,8 +53,7 @@ import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBox;
 import javax.swing.JTextField;
-import sampleem.PVEM;
-import sampleem.XYPlot;
+
 import sampleem.swing.listener.Listener;
 import sun.nio.cs.MS1250;
 
@@ -122,6 +137,10 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
         textFieldSigma2 = new com.widget.karisma.face.OvalTextField();
         textFieldPure2 = new com.widget.karisma.face.OvalTextField();
         textFieldPvPrior2 = new com.widget.karisma.face.OvalTextField();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
         panelWhiteBorder3 = new com.widget.karisma.container.PanelWhiteBorder();
         buttonInit = new com.karisma.widget.gradienbutton.ButtonGradient();
         buttonStart = new com.karisma.widget.gradienbutton.ButtonGradient();
@@ -135,12 +154,18 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
         textFieldDownSampling = new com.widget.karisma.face.OvalTextField();
         panelWhiteBorder4 = new com.widget.karisma.container.PanelWhiteBorder();
         panelWhiteBorder6 = new com.widget.karisma.container.PanelWhiteBorder();
+        jScrollPane2 = new javax.swing.JScrollPane();
         imgRest1 = new javax.swing.JLabel();
-        imgRest2 = new javax.swing.JLabel();
-        imgRest3 = new javax.swing.JLabel();
-        imgRest6 = new javax.swing.JLabel();
-        imgRest5 = new javax.swing.JLabel();
+        jScrollPane3 = new javax.swing.JScrollPane();
         imgRest4 = new javax.swing.JLabel();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        imgRest2 = new javax.swing.JLabel();
+        jScrollPane5 = new javax.swing.JScrollPane();
+        imgRest5 = new javax.swing.JLabel();
+        jScrollPane6 = new javax.swing.JScrollPane();
+        imgRest3 = new javax.swing.JLabel();
+        jScrollPane7 = new javax.swing.JScrollPane();
+        imgRest6 = new javax.swing.JLabel();
 
         setLayout(new java.awt.BorderLayout());
 
@@ -152,114 +177,161 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
 
         panelWhiteBorder2.setPreferredSize(new java.awt.Dimension(823, 140));
 
+        textFieldMean0.setHorizontalAlignment(javax.swing.JTextField.LEFT);
         textFieldMean0.setText("0");
+        textFieldMean0.setToolTipText("");
         textFieldMean0.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 textFieldMean0ActionPerformed(evt);
             }
         });
 
+        textFieldSigma0.setHorizontalAlignment(javax.swing.JTextField.LEFT);
         textFieldSigma0.setText("0");
+        textFieldSigma0.setToolTipText("");
         textFieldSigma0.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 textFieldSigma0ActionPerformed(evt);
             }
         });
 
+        textFieldPure0.setHorizontalAlignment(javax.swing.JTextField.LEFT);
         textFieldPure0.setText("0");
+        textFieldPure0.setToolTipText("");
         textFieldPure0.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 textFieldPure0ActionPerformed(evt);
             }
         });
 
+        textFieldPvPrior0.setHorizontalAlignment(javax.swing.JTextField.LEFT);
         textFieldPvPrior0.setText("0");
+        textFieldPvPrior0.setToolTipText("");
         textFieldPvPrior0.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 textFieldPvPrior0ActionPerformed(evt);
             }
         });
 
+        textFieldMean1.setHorizontalAlignment(javax.swing.JTextField.LEFT);
         textFieldMean1.setText("0");
+        textFieldMean1.setToolTipText("");
         textFieldMean1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 textFieldMean1ActionPerformed(evt);
             }
         });
 
+        textFieldSigma1.setHorizontalAlignment(javax.swing.JTextField.LEFT);
         textFieldSigma1.setText("0");
+        textFieldSigma1.setToolTipText("");
         textFieldSigma1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 textFieldSigma1ActionPerformed(evt);
             }
         });
 
+        textFieldPure1.setHorizontalAlignment(javax.swing.JTextField.LEFT);
         textFieldPure1.setText("0");
+        textFieldPure1.setToolTipText("");
         textFieldPure1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 textFieldPure1ActionPerformed(evt);
             }
         });
 
+        textFieldPvPrior1.setHorizontalAlignment(javax.swing.JTextField.LEFT);
         textFieldPvPrior1.setText("0");
+        textFieldPvPrior1.setToolTipText("");
         textFieldPvPrior1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 textFieldPvPrior1ActionPerformed(evt);
             }
         });
 
+        textFieldMean2.setHorizontalAlignment(javax.swing.JTextField.LEFT);
         textFieldMean2.setText("0");
+        textFieldMean2.setToolTipText("");
         textFieldMean2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 textFieldMean2ActionPerformed(evt);
             }
         });
 
+        textFieldSigma2.setHorizontalAlignment(javax.swing.JTextField.LEFT);
         textFieldSigma2.setText("0");
+        textFieldSigma2.setToolTipText("");
         textFieldSigma2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 textFieldSigma2ActionPerformed(evt);
             }
         });
 
+        textFieldPure2.setHorizontalAlignment(javax.swing.JTextField.LEFT);
         textFieldPure2.setText("0");
+        textFieldPure2.setToolTipText("");
         textFieldPure2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 textFieldPure2ActionPerformed(evt);
             }
         });
 
+        textFieldPvPrior2.setHorizontalAlignment(javax.swing.JTextField.LEFT);
         textFieldPvPrior2.setText("0");
+        textFieldPvPrior2.setToolTipText("");
         textFieldPvPrior2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 textFieldPvPrior2ActionPerformed(evt);
             }
         });
 
+        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel1.setText("Standard Deviasi");
+
+        jLabel2.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jLabel2.setText("Mean");
+        jLabel2.setToolTipText("");
+
+        jLabel3.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel3.setText("CSV");
+
+        jLabel4.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel4.setText("CSF GM");
+
         javax.swing.GroupLayout panelWhiteBorder2Layout = new javax.swing.GroupLayout(panelWhiteBorder2);
         panelWhiteBorder2.setLayout(panelWhiteBorder2Layout);
         panelWhiteBorder2Layout.setHorizontalGroup(
             panelWhiteBorder2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelWhiteBorder2Layout.createSequentialGroup()
-                .addGap(118, 118, 118)
-                .addGroup(panelWhiteBorder2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(textFieldPvPrior0, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(textFieldPure0, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(textFieldSigma0, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(textFieldMean0, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(136, 136, 136)
-                .addGroup(panelWhiteBorder2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(textFieldPvPrior1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(textFieldPure1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(textFieldSigma1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(textFieldMean1, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 170, Short.MAX_VALUE)
+                .addGap(25, 25, 25)
+                .addGroup(panelWhiteBorder2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(32, 32, 32)
+                .addGroup(panelWhiteBorder2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(textFieldMean0, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(textFieldSigma0, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(textFieldPure0, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(textFieldPvPrior0, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(35, 35, 35)
+                .addGroup(panelWhiteBorder2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(textFieldSigma1, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(textFieldMean1, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(textFieldPure1, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(textFieldPvPrior1, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(28, 28, 28)
                 .addGroup(panelWhiteBorder2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(textFieldPvPrior2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(textFieldPure2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(textFieldSigma2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(textFieldMean2, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(38, 38, 38))
+                .addContainerGap(207, Short.MAX_VALUE))
         );
         panelWhiteBorder2Layout.setVerticalGroup(
             panelWhiteBorder2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -267,7 +339,12 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
                 .addContainerGap()
                 .addGroup(panelWhiteBorder2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(panelWhiteBorder2Layout.createSequentialGroup()
-                        .addComponent(textFieldMean2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(panelWhiteBorder2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(textFieldMean2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(panelWhiteBorder2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(textFieldMean0, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(textFieldMean1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jLabel2)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(textFieldSigma2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -276,23 +353,27 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
                         .addComponent(textFieldPvPrior2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(panelWhiteBorder2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(panelWhiteBorder2Layout.createSequentialGroup()
-                            .addComponent(textFieldMean1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(panelWhiteBorder2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(textFieldSigma0, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(textFieldSigma1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jLabel1))
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(textFieldSigma1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(panelWhiteBorder2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(textFieldPure0, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(textFieldPure1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(textFieldPure1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(textFieldPvPrior1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(panelWhiteBorder2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(textFieldPvPrior0, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(textFieldPvPrior1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGroup(panelWhiteBorder2Layout.createSequentialGroup()
-                            .addComponent(textFieldMean0, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(textFieldSigma0, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(textFieldPure0, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(textFieldPvPrior0, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addGap(33, 33, 33)
+                            .addComponent(jLabel3)
+                            .addGap(18, 18, 18)
+                            .addComponent(jLabel4))))
                 .addContainerGap(14, Short.MAX_VALUE))
         );
+
+        panelWhiteBorder2Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jLabel1, jLabel2, jLabel3, jLabel4});
 
         panelWhiteBorder1.add(panelWhiteBorder2, java.awt.BorderLayout.CENTER);
 
@@ -424,55 +505,61 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
 
         imgRest1.setForeground(new java.awt.Color(255, 255, 255));
         imgRest1.setText("                          IMAGE SATU");
-
-        imgRest2.setForeground(new java.awt.Color(255, 255, 255));
-        imgRest2.setText("                          IMAGE SATU");
-
-        imgRest3.setForeground(new java.awt.Color(255, 255, 255));
-        imgRest3.setText("                          IMAGE SATU");
-
-        imgRest6.setForeground(new java.awt.Color(255, 255, 255));
-        imgRest6.setText("                          IMAGE SATU");
-
-        imgRest5.setForeground(new java.awt.Color(255, 255, 255));
-        imgRest5.setText("                          IMAGE SATU");
+        jScrollPane2.setViewportView(imgRest1);
 
         imgRest4.setForeground(new java.awt.Color(255, 255, 255));
         imgRest4.setText("                          IMAGE SATU");
+        jScrollPane3.setViewportView(imgRest4);
+
+        imgRest2.setForeground(new java.awt.Color(255, 255, 255));
+        imgRest2.setText("                          IMAGE SATU");
+        jScrollPane4.setViewportView(imgRest2);
+
+        imgRest5.setForeground(new java.awt.Color(255, 255, 255));
+        imgRest5.setText("                          IMAGE SATU");
+        jScrollPane5.setViewportView(imgRest5);
+
+        imgRest3.setForeground(new java.awt.Color(255, 255, 255));
+        imgRest3.setText("                          IMAGE SATU");
+        jScrollPane6.setViewportView(imgRest3);
+
+        imgRest6.setForeground(new java.awt.Color(255, 255, 255));
+        imgRest6.setText("                          IMAGE SATU");
+        jScrollPane7.setViewportView(imgRest6);
 
         javax.swing.GroupLayout panelWhiteBorder6Layout = new javax.swing.GroupLayout(panelWhiteBorder6);
         panelWhiteBorder6.setLayout(panelWhiteBorder6Layout);
         panelWhiteBorder6Layout.setHorizontalGroup(
             panelWhiteBorder6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelWhiteBorder6Layout.createSequentialGroup()
-                .addGap(47, 47, 47)
+                .addContainerGap()
+                .addGroup(panelWhiteBorder6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 242, Short.MAX_VALUE)
+                    .addComponent(jScrollPane3))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 45, Short.MAX_VALUE)
                 .addGroup(panelWhiteBorder6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(imgRest1, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(imgRest4, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 115, Short.MAX_VALUE)
-                .addGroup(panelWhiteBorder6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(imgRest2, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(imgRest5, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(88, 88, 88)
-                .addGroup(panelWhiteBorder6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(imgRest6, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(imgRest3, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(66, 66, 66))
+                    .addComponent(jScrollPane4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jScrollPane5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(36, 36, 36)
+                .addGroup(panelWhiteBorder6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 219, Short.MAX_VALUE)
+                    .addComponent(jScrollPane7))
+                .addGap(29, 29, 29))
         );
         panelWhiteBorder6Layout.setVerticalGroup(
             panelWhiteBorder6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelWhiteBorder6Layout.createSequentialGroup()
-                .addGap(21, 21, 21)
-                .addGroup(panelWhiteBorder6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(imgRest1, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(imgRest2, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(imgRest3, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(panelWhiteBorder6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(imgRest4, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(imgRest5, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(imgRest6, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(21, Short.MAX_VALUE))
+                .addContainerGap()
+                .addGroup(panelWhiteBorder6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 132, Short.MAX_VALUE)
+                    .addComponent(jScrollPane4))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(panelWhiteBorder6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 108, Short.MAX_VALUE)
+                    .addComponent(jScrollPane7)
+                    .addComponent(jScrollPane5))
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout panelWhiteBorder4Layout = new javax.swing.GroupLayout(panelWhiteBorder4);
@@ -543,6 +630,9 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
         imageOtak.setText("");
 //            temp = citraDua.getScaledInstance(drawPanel1.getWidth(), drawPanel1.getHeight(), citraDua.SCALE_FAST);
         imageOtak.setIcon(new ImageIcon(citraSrc));
+        if (!vImages.isEmpty()) {
+            SetImage(comboImage.getSelectedIndex());
+        }
     }//GEN-LAST:event_comboImageItemStateChanged
 
     private void textFieldMean0ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textFieldMean0ActionPerformed
@@ -646,7 +736,17 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
     private javax.swing.JLabel imgRest4;
     private javax.swing.JLabel imgRest5;
     private javax.swing.JLabel imgRest6;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JScrollPane jScrollPane5;
+    private javax.swing.JScrollPane jScrollPane6;
+    private javax.swing.JScrollPane jScrollPane7;
     private com.widget.karisma.container.PanelGlass panelGlass1;
     private sampleem.swing.HistogramView panelHistogram;
     private com.widget.karisma.container.PanelWhiteBorder panelWhiteBorder1;
@@ -804,8 +904,8 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
                 m_Minimum = nPixelData[ i];
             }
         }
-//        DebugMessage("valMinimum: " + m_Minimum);
-//        DebugMessage("valMaximum: " + m_Maximum);
+        DebugMessage("valMinimum: " + m_Minimum);
+        DebugMessage("valMaximum: " + m_Maximum);
 
 
         // Build histogram
@@ -1189,10 +1289,13 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
             int red;
             if (((nPixelData[ i] > lowThreshold) && (nPixelData[ i] < highThreshold)) == false) {
                 //continue;
+//                System.out.println("black");
                 red = 0;
             } else {
+
                 final int histogramEntry = nPixelData[ i] - m_Minimum;
                 red = (int) (likelihoodTimesPrior[ histogramEntry] / (m_Evidence[ histogramEntry] + 0.0000001) * 255);
+//                System.out.println("diff : " + red);
             }
 
             final int green = red;
@@ -1203,9 +1306,10 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
         Image img = createImage(new MemoryImageSource(m_Width, m_Height, pix, 0, m_Width));
 //        g.drawImage(img, x, y, width, height, this);
 
-        BufferedImage bfrImage = new BufferedImage(img.getWidth(null), img.getHeight(null), BufferedImage.TYPE_INT_RGB);
-        Graphics bg = bfrImage.getGraphics();
-        bg.drawImage(img, x, y, width, height, this);
+//        BufferedImage bfrImage = new BufferedImage(img.getWidth(null), img.getHeight(null), BufferedImage.TYPE_USHORT_GRAY);
+        Image bfrImage = img;
+//        Graphics bg = bfrImage.getGraphics();
+//        bg.drawImage(img, x, y, width, height, this);
         switch (label) {
             case 1:
                 imgRest1.setText("");
@@ -1536,6 +1640,6 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
     public void DebugMessage(String message) {
         // Comment this out for final release of the Applet
         //DebugMessage( message );
-        System.out.println(message);
+//        System.out.println(message);
     }
 }

@@ -49,8 +49,8 @@ public class EMThread extends Thread {
             double oldCost = view.getM_Cost();
 
             // Do one Expectation-Maximization iteration
-            view.DebugMessage("iterationNumber: " + iterationNumber);
-            view.DebugMessage("cost old " + oldCost);
+//            view.DebugMessage("iterationNumber: " + iterationNumber);
+//            view.DebugMessage("cost old " + oldCost);
 
             view.CalculateMaximization();
             view.CalculateExpectation();
