@@ -131,6 +131,7 @@ public class PVEM extends Applet implements ActionListener, ItemListener {
 
                 // Do one Expectation-Maximization iteration
                 DebugMessage("iterationNumber: " + iterationNumber);
+                
                 CalculateMaximization();
                 CalculateExpectation();
 

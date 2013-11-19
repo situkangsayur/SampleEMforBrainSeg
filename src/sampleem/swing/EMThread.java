@@ -22,6 +22,9 @@ public class EMThread extends Thread {
     }
 
     public EMThread() {
+    }
+
+    public void startThread() {
         start();
     }
 
@@ -38,7 +41,7 @@ public class EMThread extends Thread {
         for (int iterationNumber = 0;; iterationNumber++) {
             // Check if we should stop
             if (m_StopRequested == true) {
-                view.DrawChangingElements(view.getGraphics());
+                view.paintGraph();
                 return;
             }
 
@@ -47,14 +50,19 @@ public class EMThread extends Thread {
 
             // Do one Expectation-Maximization iteration
             view.DebugMessage("iterationNumber: " + iterationNumber);
+            view.DebugMessage("cost old " + oldCost);
+
             view.CalculateMaximization();
             view.CalculateExpectation();
 
             // Draw result
             if ((iterationNumber % 40) == 0) {
-                view.DrawChangingElements(view.getGraphics());
+//                view.DrawChangingElements(view.getGraphics());
+                view.paintGraph();
                 //getToolkit().sync();
             }
+
+            view.DebugMessage("cost new " + view.getM_Cost());
 
             // Check if we have converged
             if (view.getM_Cost() > oldCost) {
