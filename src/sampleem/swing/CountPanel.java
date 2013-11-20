@@ -1477,7 +1477,9 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
     private final int valPlotY = 0;
 //    private final int m_PlotX = panelHistogram.getX();
 //    private final int m_PlotY = panelHistogram.getY();
-    private final int valPlotWidth = 494;
+//    private final int valPlotWidth = 494;
+//    private final int valPlotHeight = 210;
+    private final int valPlotWidth = 660;
     private final int valPlotHeight = 210;
     private Image valuePlotBuffer;
     private Stroke histogramStroke;
