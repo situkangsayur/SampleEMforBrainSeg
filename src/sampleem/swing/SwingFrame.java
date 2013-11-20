@@ -30,6 +30,10 @@ public class SwingFrame extends javax.swing.JFrame {
         countPanel2 = new sampleem.swing.CountPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setPreferredSize(new java.awt.Dimension(1088, 743));
+
+        countPanel2.setMinimumSize(new java.awt.Dimension(1088, 743));
+        countPanel2.setPreferredSize(new java.awt.Dimension(1028, 743));
         getContentPane().add(countPanel2, java.awt.BorderLayout.CENTER);
 
         pack();

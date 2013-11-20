@@ -74,6 +74,7 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
     private Vector vectorContrasts;
     private Vector vectorDescriptions;
     private List<DataSetEntity> urlDataset;
+    private int[] pixAll;
 
     /**
      * Creates new form CountPanel
@@ -126,6 +127,8 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
+        jScrollPane8 = new javax.swing.JScrollPane();
+        textArea1 = new com.widget.karisma.face.TextArea();
         panelWhiteBorder3 = new com.widget.karisma.container.PanelWhiteBorder();
         buttonInit = new com.karisma.widget.gradienbutton.ButtonGradient();
         buttonStart = new com.karisma.widget.gradienbutton.ButtonGradient();
@@ -151,6 +154,9 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
         imgRest3 = new javax.swing.JLabel();
         jScrollPane7 = new javax.swing.JScrollPane();
         imgRest6 = new javax.swing.JLabel();
+        panelWhiteBorder5 = new com.widget.karisma.container.PanelWhiteBorder();
+        jScrollPane9 = new javax.swing.JScrollPane();
+        imgRestAll = new javax.swing.JLabel();
 
         setLayout(new java.awt.BorderLayout());
 
@@ -287,6 +293,10 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
         jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel4.setText("CSF GM");
 
+        textArea1.setColumns(20);
+        textArea1.setRows(5);
+        jScrollPane8.setViewportView(textArea1);
+
         javax.swing.GroupLayout panelWhiteBorder2Layout = new javax.swing.GroupLayout(panelWhiteBorder2);
         panelWhiteBorder2.setLayout(panelWhiteBorder2Layout);
         panelWhiteBorder2Layout.setHorizontalGroup(
@@ -316,20 +326,22 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
                     .addComponent(textFieldPure2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(textFieldSigma2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(textFieldMean2, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(207, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane8, javax.swing.GroupLayout.PREFERRED_SIZE, 387, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(67, Short.MAX_VALUE))
         );
         panelWhiteBorder2Layout.setVerticalGroup(
             panelWhiteBorder2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelWhiteBorder2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(panelWhiteBorder2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(panelWhiteBorder2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(jScrollPane8, javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(panelWhiteBorder2Layout.createSequentialGroup()
                         .addGroup(panelWhiteBorder2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(textFieldMean2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(panelWhiteBorder2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(textFieldMean0, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(textFieldMean1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jLabel2)))
+                            .addComponent(textFieldMean0, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(textFieldMean1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel2))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(textFieldSigma2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -355,14 +367,14 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
                             .addComponent(jLabel3)
                             .addGap(18, 18, 18)
                             .addComponent(jLabel4))))
-                .addContainerGap(14, Short.MAX_VALUE))
+                .addContainerGap(16, Short.MAX_VALUE))
         );
 
         panelWhiteBorder2Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jLabel1, jLabel2, jLabel3, jLabel4});
 
         panelWhiteBorder1.add(panelWhiteBorder2, java.awt.BorderLayout.CENTER);
 
-        panelWhiteBorder3.setPreferredSize(new java.awt.Dimension(823, 310));
+        panelWhiteBorder3.setPreferredSize(new java.awt.Dimension(823, 308));
 
         buttonInit.setText("init");
         buttonInit.addActionListener(new java.awt.event.ActionListener() {
@@ -407,7 +419,7 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
             panelHistogramLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelHistogramLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(imageHist, javax.swing.GroupLayout.PREFERRED_SIZE, 471, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(imageHist, javax.swing.GroupLayout.DEFAULT_SIZE, 659, Short.MAX_VALUE)
                 .addContainerGap())
         );
         panelHistogramLayout.setVerticalGroup(
@@ -439,11 +451,11 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
             .addGroup(panelWhiteBorder3Layout.createSequentialGroup()
                 .addGap(27, 27, 27)
                 .addGroup(panelWhiteBorder3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 279, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 338, Short.MAX_VALUE)
                     .addComponent(comboImage, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(panelWhiteBorder3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(panelWhiteBorder3Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(buttonStart, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(buttonStop, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -451,40 +463,44 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
                         .addGroup(panelWhiteBorder3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(subGaussian)
                             .addComponent(textFieldDownSampling, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(6, 6, 6)
-                        .addComponent(buttonInit, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(panelHistogram, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(buttonInit, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(51, 51, 51))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelWhiteBorder3Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
+                        .addComponent(panelHistogram, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(24, 24, 24))))
         );
         panelWhiteBorder3Layout.setVerticalGroup(
             panelWhiteBorder3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panelWhiteBorder3Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelWhiteBorder3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(panelWhiteBorder3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1)
                     .addComponent(panelHistogram, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGroup(panelWhiteBorder3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(panelWhiteBorder3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelWhiteBorder3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(panelWhiteBorder3Layout.createSequentialGroup()
                             .addGap(4, 4, 4)
                             .addGroup(panelWhiteBorder3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                 .addComponent(comboImage, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addComponent(buttonStart, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addComponent(buttonStop, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelWhiteBorder3Layout.createSequentialGroup()
+                        .addGroup(panelWhiteBorder3Layout.createSequentialGroup()
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(buttonInit, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(panelWhiteBorder3Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(subGaussian)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(textFieldDownSampling, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(subGaussian)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(textFieldDownSampling, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelWhiteBorder3Layout.createSequentialGroup()
+                        .addGap(16, 16, 16)
+                        .addComponent(buttonInit, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(14, 14, 14))
         );
 
         panelWhiteBorder1.add(panelWhiteBorder3, java.awt.BorderLayout.PAGE_START);
 
         panelWhiteBorder4.setPreferredSize(new java.awt.Dimension(823, 270));
+        panelWhiteBorder4.setLayout(new javax.swing.BoxLayout(panelWhiteBorder4, javax.swing.BoxLayout.LINE_AXIS));
 
         panelWhiteBorder6.setPreferredSize(new java.awt.Dimension(823, 270));
 
@@ -536,33 +552,43 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
             .addGroup(panelWhiteBorder6Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(panelWhiteBorder6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 132, Short.MAX_VALUE)
-                    .addComponent(jScrollPane4))
+                    .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 121, Short.MAX_VALUE)
+                    .addComponent(jScrollPane4)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panelWhiteBorder6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 108, Short.MAX_VALUE)
                     .addComponent(jScrollPane7)
-                    .addComponent(jScrollPane5))
+                    .addComponent(jScrollPane5)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelWhiteBorder6Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
 
-        javax.swing.GroupLayout panelWhiteBorder4Layout = new javax.swing.GroupLayout(panelWhiteBorder4);
-        panelWhiteBorder4.setLayout(panelWhiteBorder4Layout);
-        panelWhiteBorder4Layout.setHorizontalGroup(
-            panelWhiteBorder4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panelWhiteBorder4Layout.createSequentialGroup()
-                .addGap(0, 1, Short.MAX_VALUE)
-                .addComponent(panelWhiteBorder6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 1, Short.MAX_VALUE))
+        panelWhiteBorder4.add(panelWhiteBorder6);
+
+        imgRestAll.setForeground(new java.awt.Color(255, 255, 255));
+        imgRestAll.setText("                          IMAGE SATU");
+        jScrollPane9.setViewportView(imgRestAll);
+
+        javax.swing.GroupLayout panelWhiteBorder5Layout = new javax.swing.GroupLayout(panelWhiteBorder5);
+        panelWhiteBorder5.setLayout(panelWhiteBorder5Layout);
+        panelWhiteBorder5Layout.setHorizontalGroup(
+            panelWhiteBorder5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelWhiteBorder5Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane9, javax.swing.GroupLayout.DEFAULT_SIZE, 242, Short.MAX_VALUE)
+                .addContainerGap())
         );
-        panelWhiteBorder4Layout.setVerticalGroup(
-            panelWhiteBorder4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panelWhiteBorder4Layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(panelWhiteBorder6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+        panelWhiteBorder5Layout.setVerticalGroup(
+            panelWhiteBorder5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelWhiteBorder5Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane9, javax.swing.GroupLayout.DEFAULT_SIZE, 246, Short.MAX_VALUE)
+                .addContainerGap())
         );
+
+        panelWhiteBorder4.add(panelWhiteBorder5);
 
         panelWhiteBorder1.add(panelWhiteBorder4, java.awt.BorderLayout.PAGE_END);
 
@@ -595,7 +621,7 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
         // TODO add your handling code here:
         this.StopEM();
         this.SetInitialParametersToDefault();
-        repaint();
+        paintGraph();
     }//GEN-LAST:event_buttonInitActionPerformed
 
     private void buttonStartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonStartActionPerformed
@@ -721,6 +747,7 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
     private javax.swing.JLabel imgRest4;
     private javax.swing.JLabel imgRest5;
     private javax.swing.JLabel imgRest6;
+    private javax.swing.JLabel imgRestAll;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -732,14 +759,18 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
     private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JScrollPane jScrollPane7;
+    private javax.swing.JScrollPane jScrollPane8;
+    private javax.swing.JScrollPane jScrollPane9;
     private com.widget.karisma.container.PanelGlass panelGlass1;
     private sampleem.swing.HistogramView panelHistogram;
     private com.widget.karisma.container.PanelWhiteBorder panelWhiteBorder1;
     private com.widget.karisma.container.PanelWhiteBorder panelWhiteBorder2;
     private com.widget.karisma.container.PanelWhiteBorder panelWhiteBorder3;
     private com.widget.karisma.container.PanelWhiteBorder panelWhiteBorder4;
+    private com.widget.karisma.container.PanelWhiteBorder panelWhiteBorder5;
     private com.widget.karisma.container.PanelWhiteBorder panelWhiteBorder6;
     private javax.swing.JCheckBox subGaussian;
+    private com.widget.karisma.face.TextArea textArea1;
     private com.widget.karisma.face.OvalTextField textFieldDownSampling;
     private com.widget.karisma.face.OvalTextField textFieldMean0;
     private com.widget.karisma.face.OvalTextField textFieldMean1;
@@ -1265,6 +1296,12 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
 
     public void DrawClassification(Graphics g, double[] likelihoodTimesPrior, int x, int y, int width, int height, int label) {
         int[] pix = new int[numberOfPixels];
+        if (pixAll == null) {
+            pixAll = new int[numberOfPixels];
+            for (int i = 0; i < numberOfPixels; i++) {
+                pixAll[i] = 0;
+            }
+        }
         for (int i = 0; i < numberOfPixels; i++) {
             int red;
             if (((nPixelData[ i] > lowThreshold) && (nPixelData[ i] < highThreshold)) == false) {
@@ -1278,16 +1315,64 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
 //                System.out.println("diff : " + red);
             }
 
-            final int green = 20 + red;
+            final int green = 10 + red;
             final int blue = 50 + red;
             final int alpha = 255;
             pix[ i] = (alpha << 24) | (red << 16) | (green << 8) | blue;
+
+            int greenAll = 0;
+            int blueAll = 0;
+            int alphaAll = 0;
+
+            if ((red > 0)) {
+                switch (label) {
+                    case 1:
+                        greenAll = 0 + red;
+                        blueAll = 100 + red;
+                        alphaAll = 255;
+                        break;
+
+                    case 2:
+                        greenAll = 50 + red;
+                        blueAll = 0 + red;
+                        alphaAll = 255;
+                        break;
+
+                    case 3:
+                        greenAll = 50 + red;
+                        blueAll = 50 + red;
+                        alphaAll = 255;
+                        break;
+
+                    case 4:
+                        greenAll = 10 + red;
+                        blueAll = 10 + red;
+                        alphaAll = 255;
+                        break;
+
+                    case 5:
+                        greenAll = 60 + red;
+                        blueAll = 60 + red;
+                        alphaAll = 255;
+                        break;
+
+                    case 6:
+                        greenAll = 100 + red;
+                        blueAll = 0 + red;
+                        alphaAll = 255;
+                        break;
+                }
+
+                pixAll[ i] = (alphaAll << 24) | (red << 16) | (greenAll << 8) | blueAll;
+            }
         }
         Image img = createImage(new MemoryImageSource(valImageWidth, valImageHeight, pix, 0, valImageWidth));
+        Image imgAll = createImage(new MemoryImageSource(valImageWidth, valImageHeight, pixAll, 0, valImageWidth));
 //        g.drawImage(img, x, y, width, height, this);
 
 //        BufferedImage bfrImage = new BufferedImage(img.getWidth(null), img.getHeight(null), BufferedImage.TYPE_USHORT_GRAY);
         Image bfrImage = img;
+        Image bfrImageAll = imgAll;
 //        Graphics bg = bfrImage.getGraphics();
 //        bg.drawImage(img, x, y, width, height, this);
         switch (label) {
@@ -1316,6 +1401,10 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
                 imgRest6.setIcon(new ImageIcon(bfrImage));
                 break;
         }
+
+        imgRestAll.setText("");
+        imgRestAll.setIcon(new ImageIcon(imgAll));
+
     }
 
     public void DrawClassifications(Graphics g) {
@@ -1333,7 +1422,7 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
                 pvClassNumber++;
                 Vector likelihoodTimesPriorsForThisPV = (Vector) m_PVLikelihoodTimesPriors.get(pvClassNumber);
 
-                // Retrieve likelihoodTimesPrior for this PV class by loop over all sub-Gaussians of this PV class, and 
+                // Retrieve likelihoodTimesPrior for this PV clusster by loop over all sub-Gaussians of this PV class, and 
                 // adding each Gaussian's contribution
                 double[] summedLikelihoodTimesPrior = new double[numberOfBins];
                 for (int gaussianNumber = 0; gaussianNumber < numberOfGaussiansPerPV; gaussianNumber++) {
@@ -1590,7 +1679,7 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
             }
         }
         emRunner = null;
-
+        pixAll = null;
     }
 
     public void itemStateChanged(ItemEvent e) {
