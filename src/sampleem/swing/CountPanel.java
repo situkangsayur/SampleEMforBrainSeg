@@ -1278,8 +1278,8 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
 //                System.out.println("diff : " + red);
             }
 
-            final int green = 25 + red;
-            final int blue = 10 + red;
+            final int green = 20 + red;
+            final int blue = 50 + red;
             final int alpha = 255;
             pix[ i] = (alpha << 24) | (red << 16) | (green << 8) | blue;
         }
