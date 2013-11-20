@@ -33,7 +33,7 @@ public class EMThread extends Thread {
     }
 
     public void run() {
-        view.DebugMessage("Starting EM iterations");
+        view.ShowResultMessage("Starting EM iterations");
 
         view.CalculateExpectation();
 
@@ -67,15 +67,19 @@ public class EMThread extends Thread {
             // Check if we have converged
             if (view.getM_Cost() > oldCost) {
                 // Going uphill due to numerical errors
-                view.DebugMessage("Going uphill");
-                view.DebugMessage("oldCost: " + oldCost);
-                view.DebugMessage("m_Cost: " + view.getM_Cost());
+
+                view.ShowResultMessage("Going uphill");
+                view.ShowResultMessage("oldCost: " + oldCost);
+                view.ShowResultMessage("m_Cost: " + view.getM_Cost());
+
                 m_StopRequested = true;
             } else if (((oldCost - view.getM_Cost()) / (oldCost + view.getM_Cost()) * 2) <= 1e-9) {
                 // Converged
-                view.DebugMessage("Converged: " + ((oldCost - view.getM_Cost()) / (oldCost + view.getM_Cost()) * 2));
-                view.DebugMessage("oldCost: " + oldCost);
-                view.DebugMessage("m_Cost: " + view.getM_Cost());
+
+                view.ShowResultMessage("Converged: " + ((oldCost - view.getM_Cost()) / (oldCost + view.getM_Cost()) * 2));
+                view.ShowResultMessage("oldCost: " + oldCost);
+                view.ShowResultMessage("m_Cost: " + view.getM_Cost());
+
                 m_StopRequested = true;
             }
 
