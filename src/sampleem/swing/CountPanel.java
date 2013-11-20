@@ -64,30 +64,15 @@ import sun.nio.cs.MS1250;
 public class CountPanel extends javax.swing.JPanel implements Listener {
 
     //=======================================================
-    private JTextField m_Mean1TextField;
-//    private JTextField m_Mean2TextField;
-//    private JTextField m_Sigma0TextField;
-//    private JTextField m_Sigma1TextField;
-//    private JTextField m_Sigma2TextField;
-//    private JTextField m_PurePrior0TextField;
-//    private JTextField m_PurePrior1TextField;
-//    private JTextField m_PurePrior2TextField;
-//    private JTextField m_PVPrior0TextField;
-//    private JTextField m_PVPrior1TextField;
-//    private JTextField m_PVPrior2TextField;
-    //private Label m_CostLabel;
-//    private JTextField m_DownsamplingFactorTextField;
-//    private JCheckBox m_ShowSubGaussiansCheckbox;
-//    private Choice m_ImageChoice;
-//    private EMThread m_Solver = null;
+    private JTextField mean1TextField;
     private MediaTracker media;
     private URL baseUrl;
     private ResultEntity result;
     //=======================================================
     private BufferedImage citraSrc;
-    private Vector vImages;
-    private Vector vContrasts;
-    private Vector vDescriptions;
+    private Vector vectorImages;
+    private Vector vectorContrasts;
+    private Vector vectorDescriptions;
     private List<DataSetEntity> urlDataset;
 
     /**
@@ -630,49 +615,49 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
         imageOtak.setText("");
 //            temp = citraDua.getScaledInstance(drawPanel1.getWidth(), drawPanel1.getHeight(), citraDua.SCALE_FAST);
         imageOtak.setIcon(new ImageIcon(citraSrc));
-        if (!vImages.isEmpty()) {
+        if (!vectorImages.isEmpty()) {
             SetImage(comboImage.getSelectedIndex());
         }
     }//GEN-LAST:event_comboImageItemStateChanged
 
     private void textFieldMean0ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textFieldMean0ActionPerformed
         // TODO add your handling code here:
-        m_Means[0] = Double.parseDouble(textFieldMean0.getText());
+        valueMeans[0] = Double.parseDouble(textFieldMean0.getText());
         this.CalculateExpectation();
         repaint();
     }//GEN-LAST:event_textFieldMean0ActionPerformed
 
     private void textFieldMean1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textFieldMean1ActionPerformed
         // TODO add your handling code here:
-        m_Means[1] = Double.parseDouble(textFieldMean1.getText());
+        valueMeans[1] = Double.parseDouble(textFieldMean1.getText());
         this.CalculateExpectation();
         repaint();
     }//GEN-LAST:event_textFieldMean1ActionPerformed
 
     private void textFieldMean2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textFieldMean2ActionPerformed
         // TODO add your handling code here:
-        m_Means[2] = Double.parseDouble(textFieldMean2.getText());
+        valueMeans[2] = Double.parseDouble(textFieldMean2.getText());
         this.CalculateExpectation();
         repaint();
     }//GEN-LAST:event_textFieldMean2ActionPerformed
 
     private void textFieldSigma0ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textFieldSigma0ActionPerformed
         // TODO add your handling code here:
-        m_Variances[0] = Math.pow(Double.parseDouble(textFieldSigma0.getText()), 2);
+        valueVariances[0] = Math.pow(Double.parseDouble(textFieldSigma0.getText()), 2);
         this.CalculateExpectation();
         repaint();
     }//GEN-LAST:event_textFieldSigma0ActionPerformed
 
     private void textFieldSigma1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textFieldSigma1ActionPerformed
         // TODO add your handling code here:
-        m_Variances[1] = Math.pow(Double.parseDouble(textFieldSigma1.getText()), 2);
+        valueVariances[1] = Math.pow(Double.parseDouble(textFieldSigma1.getText()), 2);
         this.CalculateExpectation();
         repaint();
     }//GEN-LAST:event_textFieldSigma1ActionPerformed
 
     private void textFieldSigma2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textFieldSigma2ActionPerformed
         // TODO add your handling code here:
-        m_Variances[2] = Math.pow(Double.parseDouble(textFieldSigma2.getText()), 2);
+        valueVariances[2] = Math.pow(Double.parseDouble(textFieldSigma2.getText()), 2);
         this.CalculateExpectation();
         repaint();
     }//GEN-LAST:event_textFieldSigma2ActionPerformed
@@ -707,18 +692,18 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
     private void textFieldDownSamplingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textFieldDownSamplingActionPerformed
         // TODO add your handling code here:
         try {
-            m_DownsamplingFactor = Integer.parseInt(textFieldDownSampling.getText());
+            valDownsamplingFactor = Integer.parseInt(textFieldDownSampling.getText());
         } catch (NumberFormatException exception) {
             //Use default value.
-            m_DownsamplingFactor = 2;
+            valDownsamplingFactor = 2;
         }
-        if (m_DownsamplingFactor < 1) {
-            m_DownsamplingFactor = 1;
-        } else if (m_DownsamplingFactor > 5) // This limitation is not theoretically necessary, but makes the applet fool proof. A factor of 5 already results in 24 PV fractions!
+        if (valDownsamplingFactor < 1) {
+            valDownsamplingFactor = 1;
+        } else if (valDownsamplingFactor > 5) // This limitation is not theoretically necessary, but makes the applet fool proof. A factor of 5 already results in 24 PV fractions!
         {
-            m_DownsamplingFactor = 5;
+            valDownsamplingFactor = 5;
         }
-        textFieldDownSampling.setText("" + m_DownsamplingFactor);
+        textFieldDownSampling.setText("" + valDownsamplingFactor);
         this.SetInitialParametersToDefault();
         repaint();
     }//GEN-LAST:event_textFieldDownSamplingActionPerformed
@@ -786,9 +771,9 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
             result = new ResultEntity();
         }
 
-        vImages = new Vector();
-        vContrasts = new Vector();
-        vDescriptions = new Vector();
+        vectorImages = new Vector();
+        vectorContrasts = new Vector();
+        vectorDescriptions = new Vector();
 
         for (int i = 1;; i++) {
 //            String imageFileName = "imageFileName" + i;
@@ -814,15 +799,15 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
             }
 //            DebugMessage("imageFileName" + i + ": " + imageFileName);
 //            Image image = getImage(m_BaseURL, imageFileName);
-            vImages.add(citraSrc);
+            vectorImages.add(citraSrc);
 //            m_Images.add(image);
 //            Image image = citraSrc;
             // tell the MediaTracker to keep an eye on this image, and give it an ID;
             media.addImage(citraSrc, i);
 
             // Also read the contrast and the description
-            vContrasts.add("imageFileName" + i);
-            vDescriptions.add("deskripsi " + i);
+            vectorContrasts.add("imageFileName" + i);
+            vectorDescriptions.add("deskripsi " + i);
             imageOtak.setText("");
 //            temp = citraDua.getScaledInstance(drawPanel1.getWidth(), drawPanel1.getHeight(), citraDua.SCALE_FAST);
             imageOtak.setIcon(new ImageIcon(citraSrc));
@@ -844,23 +829,23 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
     }
     String contrast;
     private Image tempImage;
-    private int m_Minimum;
-    private int m_Maximum;
-    private int m_Width;
-    private int m_Height;
-    private int m_NumberOfPixels;
+    private int valMinimum;
+    private int valMaximum;
+    private int valImageWidth;
+    private int valImageHeight;
+    private int numberOfPixels;
     private int[] nPixelData;
-    private int m_NumberOfBins;
-    private double[] m_Histogram;
-    private int m_NumberOfActivePixels;
+    private int numberOfBins;
+    private double[] histogram;
+    private int numberOfActivePixels;
     private final int lowThreshold = 25;
     private final int highThreshold = 255;
-    private int m_NumberOfPVClasses;
-    private final int m_NumberOfClasses = 3;
+    private int numberOfPVClasses;
+    private final int numberOfCluster = 3;
 
     public void SetImage(int imageNumber) {
-        contrast = (String) vContrasts.get(imageNumber);
-        tempImage = (Image) vImages.get(imageNumber);
+        contrast = (String) vectorContrasts.get(imageNumber);
+        tempImage = (Image) vectorImages.get(imageNumber);
 
         // Turn into BufferedImage
         BufferedImage bufferedImage = new BufferedImage(tempImage.getWidth(null), tempImage.getHeight(null),
@@ -871,15 +856,15 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
         // Get access to the pixel data
         Raster raster = bufferedImage.getData();
         //DataBuffer  dataBuffer = raster.getDataBuffer();
-        m_Width = raster.getWidth();
-        m_Height = raster.getHeight();
-        m_NumberOfPixels = m_Width * m_Height;
-        int[] rgbArray = new int[m_NumberOfPixels * 3];
+        valImageWidth = raster.getWidth();
+        valImageHeight = raster.getHeight();
+        numberOfPixels = valImageWidth * valImageHeight;
+        int[] rgbArray = new int[numberOfPixels * 3];
         raster.getPixels(0 /* x */, 0 /* y */, raster.getWidth(), raster.getHeight(), rgbArray);
 
         // Get only the red component
-        nPixelData = new int[m_NumberOfPixels];
-        for (int i = 0; i < m_NumberOfPixels; i++) {
+        nPixelData = new int[numberOfPixels];
+        for (int i = 0; i < numberOfPixels; i++) {
 //            DebugMessage("rgb array : " + rgbArray[ i * 3]);
             nPixelData[ i] = rgbArray[ i * 3];
         }
@@ -893,36 +878,36 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
 
 
         // Get the minimum and maximum
-        m_Minimum = 1000000000;
-        m_Maximum = 0;
+        valMinimum = 1000000000;
+        valMaximum = 0;
 //        DebugMessage("jumlah pixel : " + m_NumberOfPixels);
-        for (int i = 0; i < m_NumberOfPixels; i++) {
+        for (int i = 0; i < numberOfPixels; i++) {
 //            DebugMessage("valMinimum: " + nPixelData[i]);
-            if (nPixelData[ i] > m_Maximum) {
-                m_Maximum = nPixelData[ i];
-            } else if (nPixelData[ i] < m_Minimum) {
-                m_Minimum = nPixelData[ i];
+            if (nPixelData[ i] > valMaximum) {
+                valMaximum = nPixelData[ i];
+            } else if (nPixelData[ i] < valMinimum) {
+                valMinimum = nPixelData[ i];
             }
         }
-        DebugMessage("valMinimum: " + m_Minimum);
-        DebugMessage("valMaximum: " + m_Maximum);
+        DebugMessage("valMinimum: " + valMinimum);
+        DebugMessage("valMaximum: " + valMaximum);
 
 
         // Build histogram
-        m_NumberOfBins = m_Maximum - m_Minimum + 1;
-        m_Histogram = new double[m_NumberOfBins];
-        for (int j = 0; j < m_NumberOfBins; j++) {
-            m_Histogram[ j] = 0;
+        numberOfBins = valMaximum - valMinimum + 1;
+        histogram = new double[numberOfBins];
+        for (int j = 0; j < numberOfBins; j++) {
+            histogram[ j] = 0;
         }
-        m_NumberOfActivePixels = 0;
-        for (int i = 0; i < m_NumberOfPixels; i++) {
+        numberOfActivePixels = 0;
+        for (int i = 0; i < numberOfPixels; i++) {
             if ((nPixelData[ i] > lowThreshold) && (nPixelData[ i] < highThreshold)) {
-                m_Histogram[ nPixelData[ i] - m_Minimum] += 1;
-                m_NumberOfActivePixels++;
+                histogram[ nPixelData[ i] - valMinimum] += 1;
+                numberOfActivePixels++;
             }
         }
-        for (int j = 0; j < m_NumberOfBins; j++) {
-            m_Histogram[ j] /= m_NumberOfActivePixels;
+        for (int j = 0; j < numberOfBins; j++) {
+            histogram[ j] /= numberOfActivePixels;
         }
 
         //DebugMessage( "histogram: " );
@@ -932,10 +917,10 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
         //  }
 
         // Calculate number of PV classes
-        m_NumberOfPVClasses = 0;
-        for (int classNumber1 = 0; classNumber1 < m_NumberOfClasses; classNumber1++) {
-            for (int classNumber2 = classNumber1 + 1; classNumber2 < m_NumberOfClasses; classNumber2++) {
-                m_NumberOfPVClasses++;
+        numberOfPVClasses = 0;
+        for (int classNumber1 = 0; classNumber1 < numberOfCluster; classNumber1++) {
+            for (int classNumber2 = classNumber1 + 1; classNumber2 < numberOfCluster; classNumber2++) {
+                numberOfPVClasses++;
             }
         }
         //DebugMessage( "NumberOfPVClasses: " + numberOfPVClasses );
@@ -944,40 +929,40 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
         this.SetInitialParametersToDefault();
         paintGraph();
     }
-    private int m_NumberOfGaussiansPerPV;
-    private double[] m_Means;
-    private double[] m_Variances;
-    private double[] m_PurePriors;
-    private double[] m_PVPriors;
-    private int m_DownsamplingFactor = 2;
+    private int numberOfGaussiansPerPV;
+    private double[] valueMeans;
+    private double[] valueVariances;
+    private double[] valuePurePriors;
+    private double[] valuePVPriors;
+    private int valDownsamplingFactor = 2;
 
     public void SetInitialParametersToDefault() {
         // Calculate number of Gaussians per PV class
-        m_NumberOfGaussiansPerPV = m_DownsamplingFactor * m_DownsamplingFactor - 1;
+        numberOfGaussiansPerPV = valDownsamplingFactor * valDownsamplingFactor - 1;
         //DebugMessage( "m_NumberOfGaussiansPerPV: " + m_NumberOfGaussiansPerPV );
 
         // Initialize parameters    
-        m_Means = new double[m_NumberOfClasses];
-        m_Variances = new double[m_NumberOfClasses];
-        m_PurePriors = new double[m_NumberOfClasses];
-        m_PVPriors = new double[m_NumberOfPVClasses];
-        for (int classNumber = 0; classNumber < m_NumberOfClasses; classNumber++) {
+        valueMeans = new double[numberOfCluster];
+        valueVariances = new double[numberOfCluster];
+        valuePurePriors = new double[numberOfCluster];
+        valuePVPriors = new double[numberOfPVClasses];
+        for (int classNumber = 0; classNumber < numberOfCluster; classNumber++) {
             /*      m_Means[ classNumber ] = valMinimum + ( ( valMaximum - valMinimum ) / ( ( double )( numberOfClasses + 1 ) ) ) * 
              ( classNumber + 1 );*/
-            m_Means[ classNumber] = m_Minimum + ((m_Maximum - m_Minimum) / ((double) (m_NumberOfClasses)))
+            valueMeans[ classNumber] = valMinimum + ((valMaximum - valMinimum) / ((double) (numberOfCluster)))
                     * (classNumber + 0.5);
-            m_Variances[ classNumber] = Math.pow((m_Maximum - m_Minimum) / 3.0, 2);
-            if (m_NumberOfGaussiansPerPV != 0) {
-                m_PurePriors[ classNumber] = 1 / ((double) (m_NumberOfClasses + m_NumberOfPVClasses));
+            valueVariances[ classNumber] = Math.pow((valMaximum - valMinimum) / 3.0, 2);
+            if (numberOfGaussiansPerPV != 0) {
+                valuePurePriors[ classNumber] = 1 / ((double) (numberOfCluster + numberOfPVClasses));
             } else {
-                m_PurePriors[ classNumber] = 1 / ((double) (m_NumberOfClasses));
+                valuePurePriors[ classNumber] = 1 / ((double) (numberOfCluster));
             }
         }
-        for (int pvClassNumber = 0; pvClassNumber < m_NumberOfPVClasses; pvClassNumber++) {
-            if (m_NumberOfGaussiansPerPV != 0) {
-                m_PVPriors[ pvClassNumber] = 1 / ((double) (m_NumberOfClasses + m_NumberOfPVClasses));
+        for (int pvClassNumber = 0; pvClassNumber < numberOfPVClasses; pvClassNumber++) {
+            if (numberOfGaussiansPerPV != 0) {
+                valuePVPriors[ pvClassNumber] = 1 / ((double) (numberOfCluster + numberOfPVClasses));
             } else {
-                m_PVPriors[ pvClassNumber] = 0;
+                valuePVPriors[ pvClassNumber] = 0;
             }
         }
 
@@ -987,9 +972,9 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
         String compareString = "imageFileName2";
         if (contrast.matches(compareString)) {
             DebugMessage("swapping");
-            double tmp = m_Means[ 0];
-            m_Means[ 0] = m_Means[ 2];
-            m_Means[ 2] = tmp;
+            double tmp = valueMeans[ 0];
+            valueMeans[ 0] = valueMeans[ 2];
+            valueMeans[ 2] = tmp;
             System.out.println("wooowwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww");
         }
 
@@ -1004,24 +989,24 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
     public void CalculateExpectation() {
         //
         // Expectation step: classify
-        DebugMessage("m number bins :" + m_NumberOfBins);
-        m_Evidence = new double[m_NumberOfBins];
-        for (int i = m_Minimum; i < (m_Maximum + 1); i++) {
-            m_Evidence[ i - m_Minimum] = 0;
+        DebugMessage("m number bins :" + numberOfBins);
+        m_Evidence = new double[numberOfBins];
+        for (int i = valMinimum; i < (valMaximum + 1); i++) {
+            m_Evidence[ i - valMinimum] = 0;
         }
 
         // Calculate the contributions of the pure classes
         m_PureLikelihoodTimesPriors = new Vector();
-        for (int classNumber = 0; classNumber < m_NumberOfClasses; classNumber++) {
+        for (int classNumber = 0; classNumber < numberOfCluster; classNumber++) {
             // Create the pure Gaussian
-            final double mean = m_Means[ classNumber];
-            final double variance = m_Variances[ classNumber];
-            final double prior = m_PurePriors[ classNumber];
-            double[] likelihoodTimesPrior = new double[m_NumberOfBins];
-            for (int i = m_Minimum; i < (m_Maximum + 1); i++) {
-                likelihoodTimesPrior[ i - m_Minimum] = 1 / Math.sqrt(2 * Math.PI * variance)
+            final double mean = valueMeans[ classNumber];
+            final double variance = valueVariances[ classNumber];
+            final double prior = valuePurePriors[ classNumber];
+            double[] likelihoodTimesPrior = new double[numberOfBins];
+            for (int i = valMinimum; i < (valMaximum + 1); i++) {
+                likelihoodTimesPrior[ i - valMinimum] = 1 / Math.sqrt(2 * Math.PI * variance)
                         * Math.exp(-Math.pow(i - mean, 2) / variance / 2) * prior;
-                m_Evidence[ i - m_Minimum] += likelihoodTimesPrior[ i - m_Minimum];
+                m_Evidence[ i - valMinimum] += likelihoodTimesPrior[ i - valMinimum];
             }
 
             // 
@@ -1032,36 +1017,36 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
         // Calculate the contributions of the PV classes
         m_PVLikelihoodTimesPriors = new Vector();
         int pvClassNumber = -1;
-        for (int classNumber1 = 0; classNumber1 < m_NumberOfClasses; classNumber1++) {
-            for (int classNumber2 = classNumber1 + 1; classNumber2 < m_NumberOfClasses; classNumber2++) {
+        for (int classNumber1 = 0; classNumber1 < numberOfCluster; classNumber1++) {
+            for (int classNumber2 = classNumber1 + 1; classNumber2 < numberOfCluster; classNumber2++) {
                 pvClassNumber++;
 
                 // Retrieve parameters of the pure tissue classes this PV class is mixing for
-                final double mean1 = m_Means[ classNumber1];
-                final double variance1 = m_Variances[ classNumber1];
-                final double mean2 = m_Means[ classNumber2];
-                final double variance2 = m_Variances[ classNumber2];
+                final double mean1 = valueMeans[ classNumber1];
+                final double variance1 = valueVariances[ classNumber1];
+                final double mean2 = valueMeans[ classNumber2];
+                final double variance2 = valueVariances[ classNumber2];
 
                 //DebugMessage( "pvClassNumber: " + pvClassNumber );
 
-                final double prior = m_PVPriors[ pvClassNumber] / m_NumberOfGaussiansPerPV;
+                final double prior = valuePVPriors[ pvClassNumber] / numberOfGaussiansPerPV;
 
                 //DebugMessage( "prior: " + prior );
 
 
                 // Loop over all sub-Gaussians of this PV class
                 Vector likelihoodTimesPriorsForThisPV = new Vector();
-                for (int gaussianNumber = 0; gaussianNumber < m_NumberOfGaussiansPerPV; gaussianNumber++) {
+                for (int gaussianNumber = 0; gaussianNumber < numberOfGaussiansPerPV; gaussianNumber++) {
                     // Retrieve mean and variance for this sub-Gaussian
-                    final double alpha = (gaussianNumber + 1) / ((double) (m_DownsamplingFactor * m_DownsamplingFactor));
+                    final double alpha = (gaussianNumber + 1) / ((double) (valDownsamplingFactor * valDownsamplingFactor));
                     final double mean = alpha * mean1 + (1 - alpha) * mean2;
                     final double variance = alpha * variance1 + (1 - alpha) * variance2;
 
-                    double[] likelihoodTimesPrior = new double[m_NumberOfBins];
-                    for (int i = m_Minimum; i < (m_Maximum + 1); i++) {
+                    double[] likelihoodTimesPrior = new double[numberOfBins];
+                    for (int i = valMinimum; i < (valMaximum + 1); i++) {
                         final double tmp = 1 / Math.sqrt(2 * Math.PI * variance) * Math.exp(-Math.pow(i - mean, 2) / variance / 2) * prior;
-                        likelihoodTimesPrior[ i - m_Minimum] = tmp;
-                        m_Evidence[ i - m_Minimum] += tmp;
+                        likelihoodTimesPrior[ i - valMinimum] = tmp;
+                        m_Evidence[ i - valMinimum] += tmp;
                     }
 
                     likelihoodTimesPriorsForThisPV.add(likelihoodTimesPrior);
@@ -1078,14 +1063,14 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
         // Show the current value of the objective function
         //
         m_Cost = 0;
-        for (int i = m_Minimum; i < (m_Maximum + 1); i++) {
-            m_Cost -= Math.log(m_Evidence[ i - m_Minimum]) * m_Histogram[ i - m_Minimum];
-            DebugMessage(" m minimum : " + m_Minimum);
-            DebugMessage("m eviden :" + m_Evidence[ i - m_Minimum] + " --- " + "m histogram :" + m_Histogram[ i - m_Minimum]);
-            DebugMessage("log : " + Math.log(m_Evidence[ i - m_Minimum]) * m_Histogram[ i - m_Minimum]);
+        for (int i = valMinimum; i < (valMaximum + 1); i++) {
+            m_Cost -= Math.log(m_Evidence[ i - valMinimum]) * histogram[ i - valMinimum];
+            DebugMessage(" m minimum : " + valMinimum);
+            DebugMessage("m eviden :" + m_Evidence[ i - valMinimum] + " --- " + "m histogram :" + histogram[ i - valMinimum]);
+            DebugMessage("log : " + Math.log(m_Evidence[ i - valMinimum]) * histogram[ i - valMinimum]);
             DebugMessage("looping cost: " + m_Cost);
         }
-        m_Cost *= m_NumberOfActivePixels;
+        m_Cost *= numberOfActivePixels;
         DebugMessage("Current cost: " + m_Cost);
     }
 
@@ -1093,13 +1078,13 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
         // 
         // Maximization step: update the parameters
         //
-        double[] totalWeights = new double[m_NumberOfClasses];
-        double[] means = new double[m_NumberOfClasses];
-        double[] variancesTerm1 = new double[m_NumberOfClasses];
-        double[] variancesTerm2 = new double[m_NumberOfClasses];
-        double[] variancesTerm3 = new double[m_NumberOfClasses];
-        double[] purePriors = new double[m_NumberOfClasses];
-        for (int classNumber = 0; classNumber < m_NumberOfClasses; classNumber++) {
+        double[] totalWeights = new double[numberOfCluster];
+        double[] means = new double[numberOfCluster];
+        double[] variancesTerm1 = new double[numberOfCluster];
+        double[] variancesTerm2 = new double[numberOfCluster];
+        double[] variancesTerm3 = new double[numberOfCluster];
+        double[] purePriors = new double[numberOfCluster];
+        for (int classNumber = 0; classNumber < numberOfCluster; classNumber++) {
             totalWeights[ classNumber] = 0;
             means[ classNumber] = 0;
             variancesTerm1[ classNumber] = 0;
@@ -1107,13 +1092,13 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
             variancesTerm3[ classNumber] = 0;
             purePriors[ classNumber] = 0;
         }
-        double[] PVPriors = new double[m_NumberOfPVClasses];
-        for (int pvClassNumber = 0; pvClassNumber < m_NumberOfClasses; pvClassNumber++) {
+        double[] PVPriors = new double[numberOfPVClasses];
+        for (int pvClassNumber = 0; pvClassNumber < numberOfCluster; pvClassNumber++) {
             PVPriors[ pvClassNumber] = 0;
         }
 
         // Contribution of pure classes  
-        for (int classNumber = 0; classNumber < m_NumberOfClasses; classNumber++) {
+        for (int classNumber = 0; classNumber < numberOfCluster; classNumber++) {
             double[] likelihoodTimesPrior = (double[]) m_PureLikelihoodTimesPriors.get(classNumber);
 
             double meanContribution = 0;
@@ -1121,12 +1106,12 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
             double varianceContributionTerm2 = 0;
             double varianceContributionTerm3 = 0;
             double total = 0;
-            final double M = Math.pow(m_DownsamplingFactor, 2);
-            final double variance = m_Variances[ classNumber];
+            final double M = Math.pow(valDownsamplingFactor, 2);
+            final double variance = valueVariances[ classNumber];
             final double tau = variance * (M - 1) / Math.pow(M, 2);
             //final double tau = 0;
-            for (int i = m_Minimum; i < (m_Maximum + 1); i++) {
-                double weight = likelihoodTimesPrior[ i - m_Minimum] / m_Evidence[ i - m_Minimum] * m_Histogram[ i - m_Minimum];
+            for (int i = valMinimum; i < (valMaximum + 1); i++) {
+                double weight = likelihoodTimesPrior[ i - valMinimum] / m_Evidence[ i - valMinimum] * histogram[ i - valMinimum];
                 meanContribution += i / M * weight;
                 varianceContributionTerm1 += (tau + Math.pow(i / M, 2)) * weight;
                 varianceContributionTerm2 += i / M * weight;
@@ -1145,23 +1130,23 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
 
         // Contribution of PV classes
         int pvClassNumber = -1;
-        for (int classNumber1 = 0; classNumber1 < m_NumberOfClasses; classNumber1++) {
-            for (int classNumber2 = classNumber1 + 1; classNumber2 < m_NumberOfClasses; classNumber2++) {
+        for (int classNumber1 = 0; classNumber1 < numberOfCluster; classNumber1++) {
+            for (int classNumber2 = classNumber1 + 1; classNumber2 < numberOfCluster; classNumber2++) {
                 pvClassNumber++;
 
                 // Retrieve parameters of the pure tissue classes this PV class is mixing for
-                final double mean1 = m_Means[ classNumber1];
-                final double variance1 = m_Variances[ classNumber1];
-                final double mean2 = m_Means[ classNumber2];
-                final double variance2 = m_Variances[ classNumber2];
+                final double mean1 = valueMeans[ classNumber1];
+                final double variance1 = valueVariances[ classNumber1];
+                final double mean2 = valueMeans[ classNumber2];
+                final double variance2 = valueVariances[ classNumber2];
 
                 // Loop over all sub-Gaussians of this PV class
                 Vector likelihoodTimesPriorsForThisPV = (Vector) m_PVLikelihoodTimesPriors.get(pvClassNumber);
-                for (int gaussianNumber = 0; gaussianNumber < m_NumberOfGaussiansPerPV; gaussianNumber++) {
+                for (int gaussianNumber = 0; gaussianNumber < numberOfGaussiansPerPV; gaussianNumber++) {
                     double[] likelihoodTimesPrior = (double[]) likelihoodTimesPriorsForThisPV.get(gaussianNumber);
 
                     // Retrieve mean and variance for this sub-Gaussian
-                    final double alpha = (gaussianNumber + 1) / ((double) (m_DownsamplingFactor * m_DownsamplingFactor));
+                    final double alpha = (gaussianNumber + 1) / ((double) (valDownsamplingFactor * valDownsamplingFactor));
                     final double mean = alpha * mean1 + (1 - alpha) * mean2;
                     final double variance = alpha * variance1 + (1 - alpha) * variance2;
 
@@ -1175,13 +1160,13 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
                     double variance2ContributionTerm2 = 0;
                     double variance2ContributionTerm3 = 0;
                     double total2 = 0;
-                    for (int i = m_Minimum; i < (m_Maximum + 1); i++) {
-                        double weight = likelihoodTimesPrior[ i - m_Minimum] / m_Evidence[ i - m_Minimum] * m_Histogram[ i - m_Minimum];
+                    for (int i = valMinimum; i < (valMaximum + 1); i++) {
+                        double weight = likelihoodTimesPrior[ i - valMinimum] / m_Evidence[ i - valMinimum] * histogram[ i - valMinimum];
 
                         //DebugMessage( "weight for intensity " + i + " for gaussianNumber " + gaussianNumber + 
                         //                    " of the combination (" + classNumber1 + ", " + classNumber2 + ") : " + weight );
 
-                        final double M = Math.pow(m_DownsamplingFactor, 2);
+                        final double M = Math.pow(valDownsamplingFactor, 2);
 
                         // Contribution to class 1
                         final double tau1 = mean1 / M + variance1 / M / variance * (i - mean);
@@ -1227,30 +1212,30 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
 
 
         // Use the collected information to update the parameters   
-        final double M = Math.pow(m_DownsamplingFactor, 2);
-        for (int classNumber = 0; classNumber < m_NumberOfClasses; classNumber++) {
-            m_Means[ classNumber] = M * means[ classNumber] / totalWeights[ classNumber];
-            m_Variances[ classNumber] = M * (variancesTerm1[ classNumber]
-                    - 2 * m_Means[ classNumber] / M * variancesTerm2[ classNumber]
-                    + Math.pow(m_Means[ classNumber] / M, 2) * variancesTerm3[ classNumber])
+        final double M = Math.pow(valDownsamplingFactor, 2);
+        for (int classNumber = 0; classNumber < numberOfCluster; classNumber++) {
+            valueMeans[ classNumber] = M * means[ classNumber] / totalWeights[ classNumber];
+            valueVariances[ classNumber] = M * (variancesTerm1[ classNumber]
+                    - 2 * valueMeans[ classNumber] / M * variancesTerm2[ classNumber]
+                    + Math.pow(valueMeans[ classNumber] / M, 2) * variancesTerm3[ classNumber])
                     / totalWeights[ classNumber];
         }
 
         // Update the weights 
         double sum = 0;
-        for (int classNumber = 0; classNumber < m_NumberOfClasses; classNumber++) {
+        for (int classNumber = 0; classNumber < numberOfCluster; classNumber++) {
             sum += purePriors[ classNumber];
         }
-        for (pvClassNumber = 0; pvClassNumber < m_NumberOfPVClasses; pvClassNumber++) {
+        for (pvClassNumber = 0; pvClassNumber < numberOfPVClasses; pvClassNumber++) {
             sum += PVPriors[ pvClassNumber];
         }
 
 
-        for (int classNumber = 0; classNumber < m_NumberOfClasses; classNumber++) {
-            m_PurePriors[ classNumber] = purePriors[ classNumber] / sum;
+        for (int classNumber = 0; classNumber < numberOfCluster; classNumber++) {
+            valuePurePriors[ classNumber] = purePriors[ classNumber] / sum;
         }
-        for (pvClassNumber = 0; pvClassNumber < m_NumberOfPVClasses; pvClassNumber++) {
-            m_PVPriors[ pvClassNumber] = PVPriors[ pvClassNumber] / sum;
+        for (pvClassNumber = 0; pvClassNumber < numberOfPVClasses; pvClassNumber++) {
+            valuePVPriors[ pvClassNumber] = PVPriors[ pvClassNumber] / sum;
         }
 
 
@@ -1264,28 +1249,28 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
 
     public void DrawChangingGUI(Graphics g) {
         // Update GUI components
-        textFieldMean0.setText("" + m_Means[ 0]);
-        textFieldMean1.setText("" + m_Means[ 1]);
-        textFieldMean2.setText("" + m_Means[ 2]);
+        textFieldMean0.setText("" + valueMeans[ 0]);
+        textFieldMean1.setText("" + valueMeans[ 1]);
+        textFieldMean2.setText("" + valueMeans[ 2]);
 
-        textFieldSigma0.setText("" + Math.sqrt(m_Variances[ 0]));
-        textFieldSigma1.setText("" + Math.sqrt(m_Variances[ 1]));
-        textFieldSigma2.setText("" + Math.sqrt(m_Variances[ 2]));
+        textFieldSigma0.setText("" + Math.sqrt(valueVariances[ 0]));
+        textFieldSigma1.setText("" + Math.sqrt(valueVariances[ 1]));
+        textFieldSigma2.setText("" + Math.sqrt(valueVariances[ 2]));
 
-        textFieldPure0.setText("" + 100 * m_PurePriors[ 0]);
-        textFieldPure1.setText("" + 100 * m_PurePriors[ 1]);
-        textFieldPure2.setText("" + 100 * m_PurePriors[ 2]);
+        textFieldPure0.setText("" + 100 * valuePurePriors[ 0]);
+        textFieldPure1.setText("" + 100 * valuePurePriors[ 1]);
+        textFieldPure2.setText("" + 100 * valuePurePriors[ 2]);
 
-        textFieldPvPrior0.setText("" + 100 * m_PVPriors[ 0]);
-        textFieldPvPrior1.setText("" + 100 * m_PVPriors[ 1]);
-        textFieldPvPrior2.setText("" + 100 * m_PVPriors[ 2]);
+        textFieldPvPrior0.setText("" + 100 * valuePVPriors[ 0]);
+        textFieldPvPrior1.setText("" + 100 * valuePVPriors[ 1]);
+        textFieldPvPrior2.setText("" + 100 * valuePVPriors[ 2]);
 
 //        m_CostLabel.setText( "- log-likelihood: " + m_Cost );
     }
 
     public void DrawClassification(Graphics g, double[] likelihoodTimesPrior, int x, int y, int width, int height, int label) {
-        int[] pix = new int[m_NumberOfPixels];
-        for (int i = 0; i < m_NumberOfPixels; i++) {
+        int[] pix = new int[numberOfPixels];
+        for (int i = 0; i < numberOfPixels; i++) {
             int red;
             if (((nPixelData[ i] > lowThreshold) && (nPixelData[ i] < highThreshold)) == false) {
                 //continue;
@@ -1293,7 +1278,7 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
                 red = 0;
             } else {
 
-                final int histogramEntry = nPixelData[ i] - m_Minimum;
+                final int histogramEntry = nPixelData[ i] - valMinimum;
                 red = (int) (likelihoodTimesPrior[ histogramEntry] / (m_Evidence[ histogramEntry] + 0.0000001) * 255);
 //                System.out.println("diff : " + red);
             }
@@ -1303,7 +1288,7 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
             final int alpha = 255;
             pix[ i] = (alpha << 24) | (red << 16) | (green << 8) | blue;
         }
-        Image img = createImage(new MemoryImageSource(m_Width, m_Height, pix, 0, m_Width));
+        Image img = createImage(new MemoryImageSource(valImageWidth, valImageHeight, pix, 0, valImageWidth));
 //        g.drawImage(img, x, y, width, height, this);
 
 //        BufferedImage bfrImage = new BufferedImage(img.getWidth(null), img.getHeight(null), BufferedImage.TYPE_USHORT_GRAY);
@@ -1340,7 +1325,7 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
 
     public void DrawClassifications(Graphics g) {
         // Draw pure classification images
-        for (int classNumber = 0; classNumber < m_NumberOfClasses; classNumber++) {
+        for (int classNumber = 0; classNumber < numberOfCluster; classNumber++) {
             double[] likelihoodTimesPrior = (double[]) m_PureLikelihoodTimesPriors.get(classNumber);
             this.DrawClassification(g, likelihoodTimesPrior, 60 + classNumber * 200, 540, 150, 150, classNumber + 1);
         }
@@ -1348,18 +1333,18 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
         // Draw PV classification images
         int pvClassNumber = -1;
         int pos = 1;
-        for (int classNumber1 = 0; classNumber1 < m_NumberOfClasses; classNumber1++) {
-            for (int classNumber2 = classNumber1 + 1; classNumber2 < m_NumberOfClasses; classNumber2++) {
+        for (int classNumber1 = 0; classNumber1 < numberOfCluster; classNumber1++) {
+            for (int classNumber2 = classNumber1 + 1; classNumber2 < numberOfCluster; classNumber2++) {
                 pvClassNumber++;
                 Vector likelihoodTimesPriorsForThisPV = (Vector) m_PVLikelihoodTimesPriors.get(pvClassNumber);
 
                 // Retrieve likelihoodTimesPrior for this PV class by loop over all sub-Gaussians of this PV class, and 
                 // adding each Gaussian's contribution
-                double[] summedLikelihoodTimesPrior = new double[m_NumberOfBins];
-                for (int gaussianNumber = 0; gaussianNumber < m_NumberOfGaussiansPerPV; gaussianNumber++) {
+                double[] summedLikelihoodTimesPrior = new double[numberOfBins];
+                for (int gaussianNumber = 0; gaussianNumber < numberOfGaussiansPerPV; gaussianNumber++) {
                     double[] likelihoodTimesPrior = (double[]) likelihoodTimesPriorsForThisPV.get(gaussianNumber);
-                    for (int i = m_Minimum; i < (m_Maximum + 1); i++) {
-                        summedLikelihoodTimesPrior[ i - m_Minimum] += likelihoodTimesPrior[ i - m_Minimum];
+                    for (int i = valMinimum; i < (valMaximum + 1); i++) {
+                        summedLikelihoodTimesPrior[ i - valMinimum] += likelihoodTimesPrior[ i - valMinimum];
                     }
                 }
 //                System.out.println("class number 2 : " + classNumber2 + " " + pos);
@@ -1372,114 +1357,114 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
     }
 //     private final int m_PlotWidth = panelHistogram.getPreferredSize().width;
 //    private final int m_PlotHeight = panelHistogram.getPreferredSize().height; 494, 210
-    private final int m_PlotX = 0;
-    private final int m_PlotY = 0;
+    private final int valPlotX = 0;
+    private final int valPlotY = 0;
 //    private final int m_PlotX = panelHistogram.getX();
 //    private final int m_PlotY = panelHistogram.getY();
-    private final int m_PlotWidth = 494;
-    private final int m_PlotHeight = 210;
-    private Image m_PlotBuffer;
-    private Stroke m_HistogramStroke;
-    private Color m_HistogramColor;
-    private Stroke m_PureStroke;
-    private Color m_PureColor;
-    private Stroke m_SubGaussianStroke;
-    private Color m_SubGaussianColor;
-    private Stroke m_PVStroke;
-    private Color m_PVColor;
-    private Stroke m_TotalStroke;
-    private Color m_TotalColor;
+    private final int valPlotWidth = 494;
+    private final int valPlotHeight = 210;
+    private Image valuePlotBuffer;
+    private Stroke histogramStroke;
+    private Color histogramColor;
+    private Stroke pureStroke;
+    private Color pureColor;
+    private Stroke subGaussianStroke;
+    private Color subGaussianColor;
+    private Stroke histPVStroke;
+    private Color histPVColor;
+    private Stroke histTotalStroke;
+    private Color hitTotalColor;
 
     public void DrawPlot(Graphics g) {
         // Create plotter and fill it's element in
         //XYPlot  plotter = new XYPlot( plotX, plotY, plotWidth, plotHeight );
-        XYPlot plotter = new XYPlot(0, 0, m_PlotWidth, m_PlotHeight);
-        plotter.Add(m_Histogram, m_HistogramColor, m_HistogramStroke);
+        XYPlot plotter = new XYPlot(0, 0, valPlotWidth, valPlotHeight);
+        plotter.Add(histogram, histogramColor, histogramStroke);
 
-        double[] totalPlot = new double[m_NumberOfBins];
-        for (int i = m_Minimum; i < (m_Maximum + 1); i++) {
-            totalPlot[ i - m_Minimum] = 0;
+        double[] totalPlot = new double[numberOfBins];
+        for (int i = valMinimum; i < (valMaximum + 1); i++) {
+            totalPlot[ i - valMinimum] = 0;
         }
 
         // Create the pure Gaussian plots
-        for (int classNumber = 0; classNumber < m_NumberOfClasses; classNumber++) {
-            final double mean = m_Means[ classNumber];
-            final double variance = m_Variances[ classNumber];
-            final double prior = m_PurePriors[ classNumber];
-            double[] plot = new double[m_NumberOfBins];
-            for (int i = m_Minimum; i < (m_Maximum + 1); i++) {
-                plot[ i - m_Minimum] = 1 / Math.sqrt(2 * Math.PI * variance) * Math.exp(-Math.pow(i - mean, 2) / variance / 2) * prior;
-                totalPlot[ i - m_Minimum] += plot[ i - m_Minimum];
+        for (int classNumber = 0; classNumber < numberOfCluster; classNumber++) {
+            final double mean = valueMeans[ classNumber];
+            final double variance = valueVariances[ classNumber];
+            final double prior = valuePurePriors[ classNumber];
+            double[] plot = new double[numberOfBins];
+            for (int i = valMinimum; i < (valMaximum + 1); i++) {
+                plot[ i - valMinimum] = 1 / Math.sqrt(2 * Math.PI * variance) * Math.exp(-Math.pow(i - mean, 2) / variance / 2) * prior;
+                totalPlot[ i - valMinimum] += plot[ i - valMinimum];
             }
 
-            plotter.Add(plot, m_PureColor, m_PureStroke);
+            plotter.Add(plot, pureColor, pureStroke);
         }
 
         // Create the PV Gaussian plots
         int pvClassNumber = -1;
-        for (int classNumber1 = 0; classNumber1 < m_NumberOfClasses; classNumber1++) {
-            for (int classNumber2 = classNumber1 + 1; classNumber2 < m_NumberOfClasses; classNumber2++) {
+        for (int classNumber1 = 0; classNumber1 < numberOfCluster; classNumber1++) {
+            for (int classNumber2 = classNumber1 + 1; classNumber2 < numberOfCluster; classNumber2++) {
                 pvClassNumber++;
 
                 // Retrieve parameters of the pure tissue classes this PV class is mixing for
-                final double mean1 = m_Means[ classNumber1];
-                final double variance1 = m_Variances[ classNumber1];
-                final double mean2 = m_Means[ classNumber2];
-                final double variance2 = m_Variances[ classNumber2];
+                final double mean1 = valueMeans[ classNumber1];
+                final double variance1 = valueVariances[ classNumber1];
+                final double mean2 = valueMeans[ classNumber2];
+                final double variance2 = valueVariances[ classNumber2];
 
                 //DebugMessage( "pvClassNumber: " + pvClassNumber );
 
-                final double prior = m_PVPriors[ pvClassNumber] / m_NumberOfGaussiansPerPV;
+                final double prior = valuePVPriors[ pvClassNumber] / numberOfGaussiansPerPV;
 
                 //DebugMessage( "prior: " + prior );
 
 
 
                 // Loop over all sub-Gaussians of this PV class
-                double[] pvPlot = new double[m_NumberOfBins];
-                for (int i = m_Minimum; i < (m_Maximum + 1); i++) {
-                    pvPlot[ i - m_Minimum] = 0;
+                double[] pvPlot = new double[numberOfBins];
+                for (int i = valMinimum; i < (valMaximum + 1); i++) {
+                    pvPlot[ i - valMinimum] = 0;
                 }
-                for (int gaussianNumber = 0; gaussianNumber < m_NumberOfGaussiansPerPV; gaussianNumber++) {
+                for (int gaussianNumber = 0; gaussianNumber < numberOfGaussiansPerPV; gaussianNumber++) {
                     // Retrieve mean and variance for this sub-Gaussian
-                    final double alpha = (gaussianNumber + 1) / ((double) (m_DownsamplingFactor * m_DownsamplingFactor));
+                    final double alpha = (gaussianNumber + 1) / ((double) (valDownsamplingFactor * valDownsamplingFactor));
                     final double mean = alpha * mean1 + (1 - alpha) * mean2;
                     final double variance = alpha * variance1 + (1 - alpha) * variance2;
 
-                    double[] plot = new double[m_NumberOfBins];
-                    for (int i = m_Minimum; i < (m_Maximum + 1); i++) {
+                    double[] plot = new double[numberOfBins];
+                    for (int i = valMinimum; i < (valMaximum + 1); i++) {
                         final double tmp = 1 / Math.sqrt(2 * Math.PI * variance) * Math.exp(-Math.pow(i - mean, 2) / variance / 2) * prior;
-                        plot[ i - m_Minimum] = tmp;
-                        pvPlot[ i - m_Minimum] += tmp;
-                        totalPlot[ i - m_Minimum] += tmp;
+                        plot[ i - valMinimum] = tmp;
+                        pvPlot[ i - valMinimum] += tmp;
+                        totalPlot[ i - valMinimum] += tmp;
                     }
 
                     if (subGaussian.isSelected()) {
-                        plotter.Add(plot, m_SubGaussianColor, m_SubGaussianStroke);
+                        plotter.Add(plot, subGaussianColor, subGaussianStroke);
                     }
                 }
 
-                plotter.Add(pvPlot, m_PVColor, m_PVStroke);
+                plotter.Add(pvPlot, histPVColor, histPVStroke);
             }
 
         }
 
 
-        plotter.Add(totalPlot, m_TotalColor, m_TotalStroke);
+        plotter.Add(totalPlot, hitTotalColor, histTotalStroke);
 
         // Now we're ready to fill up the buffer. First the plot        
         //plotter.Plot( g );
-        plotter.Plot(m_PlotBuffer.getGraphics());
+        plotter.Plot(valuePlotBuffer.getGraphics());
 
         // Now the -logLikelihood
-        m_PlotBuffer.getGraphics().setColor(Color.black);
-        m_PlotBuffer.getGraphics().drawString("- log-likelihood: " + m_Cost, 10, 20);
+        valuePlotBuffer.getGraphics().setColor(Color.black);
+        valuePlotBuffer.getGraphics().drawString("- log-likelihood: " + m_Cost, 10, 20);
 
         // Finally, display the buffer
 //        g.drawImage(m_PlotBuffer, m_PlotX, m_PlotY, this);
-        BufferedImage bfrImage = new BufferedImage(m_PlotWidth, m_PlotHeight, BufferedImage.TYPE_INT_RGB);
+        BufferedImage bfrImage = new BufferedImage(valPlotWidth, valPlotHeight, BufferedImage.TYPE_INT_RGB);
         Graphics bg = bfrImage.getGraphics();
-        bg.drawImage(m_PlotBuffer, m_PlotX, m_PlotY, this);
+        bg.drawImage(valuePlotBuffer, valPlotX, valPlotY, this);
 
         imageHist.setText("");
         imageHist.setIcon(new ImageIcon(bfrImage));
@@ -1488,10 +1473,10 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
     public void SetPrior(int number, double newPrior) {
         // Check which class we are referring to, and get its current value
         double oldPrior = 0;
-        if (number < m_NumberOfClasses) {
-            oldPrior = m_PurePriors[ number];
+        if (number < numberOfCluster) {
+            oldPrior = valuePurePriors[ number];
         } else {
-            oldPrior = m_PVPriors[ number - m_NumberOfClasses];
+            oldPrior = valuePVPriors[ number - numberOfCluster];
         }
 
         // Make sure the new value makes sense
@@ -1503,18 +1488,18 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
 
         // Take certain fraction off other priors in order to make the required change
         double fraction = (newPrior - oldPrior) / (1 - oldPrior);
-        for (int classNumber = 0; classNumber < m_NumberOfClasses; classNumber++) {
-            m_PurePriors[ classNumber] -= fraction * m_PurePriors[ classNumber];
+        for (int classNumber = 0; classNumber < numberOfCluster; classNumber++) {
+            valuePurePriors[ classNumber] -= fraction * valuePurePriors[ classNumber];
         }
-        for (int pvClassNumber = 0; pvClassNumber < m_NumberOfClasses; pvClassNumber++) {
-            m_PVPriors[ pvClassNumber] -= fraction * m_PVPriors[ pvClassNumber];
+        for (int pvClassNumber = 0; pvClassNumber < numberOfCluster; pvClassNumber++) {
+            valuePVPriors[ pvClassNumber] -= fraction * valuePVPriors[ pvClassNumber];
         }
 
         // Set the prior to the specified value
-        if (number < m_NumberOfClasses) {
-            m_PurePriors[ number] = newPrior;
+        if (number < numberOfCluster) {
+            valuePurePriors[ number] = newPrior;
         } else {
-            m_PVPriors[ number - m_NumberOfClasses] = newPrior;
+            valuePVPriors[ number - numberOfCluster] = newPrior;
         }
 
         this.CalculateExpectation();
@@ -1523,33 +1508,33 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
 
     public void SetUpGUI() {
         // Define appearance of the plotted histogram lines
-        m_HistogramStroke = new BasicStroke();
-        m_HistogramColor = new Color(128, 128, 128);
-        m_TotalStroke = new BasicStroke(1.0f, // Width
+        histogramStroke = new BasicStroke();
+        histogramColor = new Color(128, 128, 128);
+        histTotalStroke = new BasicStroke(1.0f, // Width
                 BasicStroke.CAP_SQUARE, // End cap
                 BasicStroke.JOIN_MITER, // Join style
                 10.0f, // Miter limit
                 new float[]{5.0f, 5.0f}, // Dash pattern
                 //new float[] { 8.0f, 4.0f, 2.0f, 4.0f },  // Dash pattern
                 0.0f);                     // Dash phase
-        m_TotalColor = new Color(64, 64, 64);
-        m_PureStroke = m_HistogramStroke;
-        m_PureColor = new Color(192, 64, 192);
-        m_PVStroke = m_HistogramStroke;
-        m_PVColor = new Color(255, 128, 128);
-        m_SubGaussianStroke = m_HistogramStroke;
-        m_SubGaussianColor = new Color(64, 192, 64);
+        hitTotalColor = new Color(64, 64, 64);
+        pureStroke = histogramStroke;
+        pureColor = new Color(192, 64, 192);
+        histPVStroke = histogramStroke;
+        histPVColor = new Color(255, 128, 128);
+        subGaussianStroke = histogramStroke;
+        subGaussianColor = new Color(64, 192, 64);
 
 
 //        m_PlotBuffer = createImage(m_PlotWidth, m_PlotHeighth);
-        m_PlotBuffer = createImage(m_PlotWidth, m_PlotHeight);
-        if (m_PlotBuffer == null) {
+        valuePlotBuffer = createImage(valPlotWidth, valPlotHeight);
+        if (valuePlotBuffer == null) {
             DebugMessage("Buffer plot == null");
         }
 
 
 
-        textFieldDownSampling.setText("" + m_DownsamplingFactor);
+        textFieldDownSampling.setText("" + valDownsamplingFactor);
 
         // Mean text fields
         final int parameterFieldsXstart = 10;
@@ -1573,21 +1558,21 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
         textFieldPvPrior2.setText("100");
 
     }
-    private EMThread m_Solver;
+    private EMThread emRunner;
 
     public void StartEM() {
         // Make sure we're not running already
-        if (m_Solver != null) {
+        if (emRunner != null) {
             // 
-            if (m_Solver.isAlive()) {
+            if (emRunner.isAlive()) {
                 DebugMessage("Have already a thread doing our work");
                 return;
             }
         }
 
-        m_Solver = new EMThread();
-        m_Solver.setView(this);
-        m_Solver.startThread();
+        emRunner = new EMThread();
+        emRunner.setView(this);
+        emRunner.startThread();
     }
 
     public double getM_Cost() {
@@ -1597,19 +1582,19 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
     public void StopEM() {
         DebugMessage("Trying to stop the solver");
 
-        if (m_Solver == null) {
+        if (emRunner == null) {
             return;
         }
 
         // Cause the EMThread to finish up
-        m_Solver.setM_StopRequested(true);
-        while (m_Solver.isAlive()) {
+        emRunner.setM_StopRequested(true);
+        while (emRunner.isAlive()) {
             try {
                 Thread.sleep(100);
             } catch (InterruptedException e) {
             }
         }
-        m_Solver = null;
+        emRunner = null;
 
     }
 
