@@ -69,6 +69,7 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
     private MediaTracker media;
     private URL baseUrl;
     private ResultEntity result;
+    private EMThread emRunner;
     //=======================================================
     private BufferedImage citraSrc;
     private Vector vectorImages;
@@ -76,6 +77,60 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
     private Vector vectorDescriptions;
     private List<DataSetEntity> urlDataset;
     private int[] pixAll;
+    //setinisialisasi
+    //==============================================================
+    private int numberOfGaussiansPerPV;
+    private double[] valueMeans;
+    private double[] valueVariances;
+    private double[] valuePurePriors;
+    private double[] valuePVPriors;
+    private int valDownsamplingFactor = 2;
+    //setImage
+    //===============================================================
+    String contrast;
+    private Image tempImage;
+    private int valMinimum;
+    private int valMaximum;
+    private int valImageWidth;
+    private int valImageHeight;
+    private int numberOfPixels;
+    private int[] nPixelData;
+    private int numberOfBins;
+    private double[] histogram;
+    private int numberOfActivePixels;
+    private final int lowThreshold = 25;
+    private final int highThreshold = 255;
+    private int numberOfPVCluster;
+    private final int numberOfCluster = 3;
+    //calculate expectation
+    //============================================
+    private double[] m_Evidence;
+    private Vector m_PureLikelihoodTimesPriors;
+    private Vector m_PVLikelihoodTimesPriors;
+    private double m_Cost = 0;
+    //DrawPlot curve
+    //=============================================
+    //     private final int m_PlotWidth = panelHistogram.getPreferredSize().width;
+//    private final int m_PlotHeight = panelHistogram.getPreferredSize().height; 494, 210
+    private final int valPlotX = 0;
+    private final int valPlotY = 0;
+//    private final int m_PlotX = panelHistogram.getX();
+//    private final int m_PlotY = panelHistogram.getY();
+//    private final int valPlotWidth = 494;
+//    private final int valPlotHeight = 210;
+    private final int valPlotWidth = 660;
+    private final int valPlotHeight = 210;
+    private Image valuePlotBuffer;
+    private Stroke histogramStroke;
+    private Color histogramColor;
+    private Stroke pureStroke;
+    private Color pureColor;
+    private Stroke subGaussianStroke;
+    private Color subGaussianColor;
+    private Stroke histPVStroke;
+    private Color histPVColor;
+    private Stroke histTotalStroke;
+    private Color hitTotalColor;
 
     /**
      * Creates new form CountPanel
@@ -884,21 +939,6 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
         this.SetImage(comboImage.getSelectedIndex());
 
     }
-    String contrast;
-    private Image tempImage;
-    private int valMinimum;
-    private int valMaximum;
-    private int valImageWidth;
-    private int valImageHeight;
-    private int numberOfPixels;
-    private int[] nPixelData;
-    private int numberOfBins;
-    private double[] histogram;
-    private int numberOfActivePixels;
-    private final int lowThreshold = 25;
-    private final int highThreshold = 255;
-    private int numberOfPVClasses;
-    private final int numberOfCluster = 3;
 
     public void SetImage(int imageNumber) {
         contrast = (String) vectorContrasts.get(imageNumber);
@@ -968,28 +1008,21 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
         }
 
 
-        // Calculate number of PV classes
-        numberOfPVClasses = 0;
-        for (int classNumber1 = 0; classNumber1 < numberOfCluster; classNumber1++) {
-            for (int classNumber2 = classNumber1 + 1; classNumber2 < numberOfCluster; classNumber2++) {
-                numberOfPVClasses++;
+        // Calculate number of PV cluster
+        numberOfPVCluster = 0;
+        for (int clussterNumber = 0; clussterNumber < numberOfCluster; clussterNumber++) {
+            for (int clusterNumber2 = clussterNumber + 1; clusterNumber2 < numberOfCluster; clusterNumber2++) {
+                numberOfPVCluster++;
             }
         }
-        //DebugMessage( "NumberOfPVClasses: " + numberOfPVClasses );
 
         // 
         this.SetInitialParametersToDefault();
         paintGraph();
     }
-    private int numberOfGaussiansPerPV;
-    private double[] valueMeans;
-    private double[] valueVariances;
-    private double[] valuePurePriors;
-    private double[] valuePVPriors;
-    private int valDownsamplingFactor = 2;
 
     public void SetInitialParametersToDefault() {
-        // Calculate number of Gaussians per PV class
+        // Calculate number of Gaussians per PV cluster
         numberOfGaussiansPerPV = valDownsamplingFactor * valDownsamplingFactor - 1;
         //DebugMessage( "m_NumberOfGaussiansPerPV: " + m_NumberOfGaussiansPerPV );
 
@@ -997,24 +1030,24 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
         valueMeans = new double[numberOfCluster];
         valueVariances = new double[numberOfCluster];
         valuePurePriors = new double[numberOfCluster];
-        valuePVPriors = new double[numberOfPVClasses];
-        for (int classNumber = 0; classNumber < numberOfCluster; classNumber++) {
-            /*      m_Means[ classNumber ] = valMinimum + ( ( valMaximum - valMinimum ) / ( ( double )( numberOfClasses + 1 ) ) ) * 
-             ( classNumber + 1 );*/
-            valueMeans[ classNumber] = valMinimum + ((valMaximum - valMinimum) / ((double) (numberOfCluster)))
-                    * (classNumber + 0.5);
-            valueVariances[ classNumber] = Math.pow((valMaximum - valMinimum) / 3.0, 2);
+        valuePVPriors = new double[numberOfPVCluster];
+        for (int clusterNumber = 0; clusterNumber < numberOfCluster; clusterNumber++) {
+            /*      m_Means[ clusterNumber ] = valMinimum + ( ( valMaximum - valMinimum ) / ( ( double )( numberOfCluster + 1 ) ) ) * 
+             ( clusterNumber + 1 );*/
+            valueMeans[ clusterNumber] = valMinimum + ((valMaximum - valMinimum) / ((double) (numberOfCluster)))
+                    * (clusterNumber + 0.5);
+            valueVariances[ clusterNumber] = Math.pow((valMaximum - valMinimum) / 3.0, 2);
             if (numberOfGaussiansPerPV != 0) {
-                valuePurePriors[ classNumber] = 1 / ((double) (numberOfCluster + numberOfPVClasses));
+                valuePurePriors[ clusterNumber] = 1 / ((double) (numberOfCluster + numberOfPVCluster));
             } else {
-                valuePurePriors[ classNumber] = 1 / ((double) (numberOfCluster));
+                valuePurePriors[ clusterNumber] = 1 / ((double) (numberOfCluster));
             }
         }
-        for (int pvClassNumber = 0; pvClassNumber < numberOfPVClasses; pvClassNumber++) {
+        for (int pvClusterNumber = 0; pvClusterNumber < numberOfPVCluster; pvClusterNumber++) {
             if (numberOfGaussiansPerPV != 0) {
-                valuePVPriors[ pvClassNumber] = 1 / ((double) (numberOfCluster + numberOfPVClasses));
+                valuePVPriors[ pvClusterNumber] = 1 / ((double) (numberOfCluster + numberOfPVCluster));
             } else {
-                valuePVPriors[ pvClassNumber] = 0;
+                valuePVPriors[ pvClusterNumber] = 0;
             }
         }
 
@@ -1031,17 +1064,13 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
 //            System.out.println("wooowwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww");
         }
 
-        // Recalculate the initial classification  
+        // Recalculate the initial cluster
         CalculateExpectation();
     }
-    private double[] m_Evidence;
-    private Vector m_PureLikelihoodTimesPriors;
-    private Vector m_PVLikelihoodTimesPriors;
-    private double m_Cost = 0;
 
     public void CalculateExpectation() {
         //
-        // Expectation step: classify
+        // Expectation step: cluster
         DebugMessage("m number bins :" + numberOfBins);
         ShowResultMessage("====Expectation Calc=====");
         m_Evidence = new double[numberOfBins];
@@ -1049,13 +1078,13 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
             m_Evidence[ i - valMinimum] = 0;
         }
 
-        // Calculate the contributions of the pure classes
+        // Calculate the contributions of the pure cluster
         m_PureLikelihoodTimesPriors = new Vector();
-        for (int classNumber = 0; classNumber < numberOfCluster; classNumber++) {
+        for (int clusterNumber = 0; clusterNumber < numberOfCluster; clusterNumber++) {
             // Create the pure Gaussian
-            final double mean = valueMeans[ classNumber];
-            final double variance = valueVariances[ classNumber];
-            final double prior = valuePurePriors[ classNumber];
+            final double mean = valueMeans[ clusterNumber];
+            final double variance = valueVariances[ clusterNumber];
+            final double prior = valuePurePriors[ clusterNumber];
             double[] likelihoodTimesPrior = new double[numberOfBins];
             for (int i = valMinimum; i < (valMaximum + 1); i++) {
                 likelihoodTimesPrior[ i - valMinimum] = 1 / Math.sqrt(2 * Math.PI * variance)
@@ -1070,27 +1099,22 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
         }
 
         ShowResultMessage("===PV Cluster Calc===");
-        // Calculate the contributions of the PV classes
+        // Calculate the contributions of the PV cluster
         m_PVLikelihoodTimesPriors = new Vector();
-        int pvClassNumber = -1;
-        for (int classNumber1 = 0; classNumber1 < numberOfCluster; classNumber1++) {
-            for (int classNumber2 = classNumber1 + 1; classNumber2 < numberOfCluster; classNumber2++) {
-                pvClassNumber++;
+        int pvClusterNumber = -1;
+        for (int clusterNumber1 = 0; clusterNumber1 < numberOfCluster; clusterNumber1++) {
+            for (int clusterNumber2 = clusterNumber1 + 1; clusterNumber2 < numberOfCluster; clusterNumber2++) {
+                pvClusterNumber++;
 
-                // Retrieve parameters of the pure tissue classes this PV class is mixing for
-                final double mean1 = valueMeans[ classNumber1];
-                final double variance1 = valueVariances[ classNumber1];
-                final double mean2 = valueMeans[ classNumber2];
-                final double variance2 = valueVariances[ classNumber2];
+                // Retrieve parameters of the pure tissue cluster this PV cluster is mixing for
+                final double mean1 = valueMeans[ clusterNumber1];
+                final double variance1 = valueVariances[ clusterNumber1];
+                final double mean2 = valueMeans[ clusterNumber2];
+                final double variance2 = valueVariances[ clusterNumber2];
 
-                //DebugMessage( "pvClassNumber: " + pvClassNumber );
+                final double prior = valuePVPriors[ pvClusterNumber] / numberOfGaussiansPerPV;
 
-                final double prior = valuePVPriors[ pvClassNumber] / numberOfGaussiansPerPV;
-
-                //DebugMessage( "prior: " + prior );
-
-
-                // Loop over all sub-Gaussians of this PV class
+                // Loop over all sub-Gaussians of this PV cluster
                 Vector likelihoodTimesPriorsForThisPV = new Vector();
                 for (int gaussianNumber = 0; gaussianNumber < numberOfGaussiansPerPV; gaussianNumber++) {
                     // Retrieve mean and variance for this sub-Gaussian
@@ -1142,22 +1166,22 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
         double[] variancesTerm2 = new double[numberOfCluster];
         double[] variancesTerm3 = new double[numberOfCluster];
         double[] purePriors = new double[numberOfCluster];
-        for (int classNumber = 0; classNumber < numberOfCluster; classNumber++) {
-            totalWeights[ classNumber] = 0;
-            means[ classNumber] = 0;
-            variancesTerm1[ classNumber] = 0;
-            variancesTerm2[ classNumber] = 0;
-            variancesTerm3[ classNumber] = 0;
-            purePriors[ classNumber] = 0;
+        for (int clusterNumber = 0; clusterNumber < numberOfCluster; clusterNumber++) {
+            totalWeights[ clusterNumber] = 0;
+            means[ clusterNumber] = 0;
+            variancesTerm1[ clusterNumber] = 0;
+            variancesTerm2[ clusterNumber] = 0;
+            variancesTerm3[ clusterNumber] = 0;
+            purePriors[ clusterNumber] = 0;
         }
-        double[] PVPriors = new double[numberOfPVClasses];
-        for (int pvClassNumber = 0; pvClassNumber < numberOfCluster; pvClassNumber++) {
-            PVPriors[ pvClassNumber] = 0;
+        double[] PVPriors = new double[numberOfPVCluster];
+        for (int pvClusterNumber = 0; pvClusterNumber < numberOfCluster; pvClusterNumber++) {
+            PVPriors[ pvClusterNumber] = 0;
         }
 
-        // Contribution of pure classes  
-        for (int classNumber = 0; classNumber < numberOfCluster; classNumber++) {
-            double[] likelihoodTimesPrior = (double[]) m_PureLikelihoodTimesPriors.get(classNumber);
+        // Contribution of pure cluster  
+        for (int clusterNumber = 0; clusterNumber < numberOfCluster; clusterNumber++) {
+            double[] likelihoodTimesPrior = (double[]) m_PureLikelihoodTimesPriors.get(clusterNumber);
 
             double meanContribution = 0;
             double varianceContributionTerm1 = 0;
@@ -1165,7 +1189,7 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
             double varianceContributionTerm3 = 0;
             double total = 0;
             final double M = Math.pow(valDownsamplingFactor, 2);
-            final double variance = valueVariances[ classNumber];
+            final double variance = valueVariances[ clusterNumber];
             final double tau = variance * (M - 1) / Math.pow(M, 2);
             //final double tau = 0;
             for (int i = valMinimum; i < (valMaximum + 1); i++) {
@@ -1177,29 +1201,29 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
                 total += weight;
             }
 
-            means[ classNumber] += meanContribution;
-            variancesTerm1[ classNumber] += varianceContributionTerm1;
-            variancesTerm2[ classNumber] += varianceContributionTerm2;
-            variancesTerm3[ classNumber] += varianceContributionTerm3;
-            purePriors[ classNumber] = total;
-            totalWeights[ classNumber] += total;
+            means[ clusterNumber] += meanContribution;
+            variancesTerm1[ clusterNumber] += varianceContributionTerm1;
+            variancesTerm2[ clusterNumber] += varianceContributionTerm2;
+            variancesTerm3[ clusterNumber] += varianceContributionTerm3;
+            purePriors[ clusterNumber] = total;
+            totalWeights[ clusterNumber] += total;
         }
 
 
-        // Contribution of PV classes
-        int pvClassNumber = -1;
-        for (int classNumber1 = 0; classNumber1 < numberOfCluster; classNumber1++) {
-            for (int classNumber2 = classNumber1 + 1; classNumber2 < numberOfCluster; classNumber2++) {
-                pvClassNumber++;
+        // Contribution of PV cluster
+        int pvClusterNumber = -1;
+        for (int clusterNumber1 = 0; clusterNumber1 < numberOfCluster; clusterNumber1++) {
+            for (int clusterNumber2 = clusterNumber1 + 1; clusterNumber2 < numberOfCluster; clusterNumber2++) {
+                pvClusterNumber++;
 
-                // Retrieve parameters of the pure tissue classes this PV class is mixing for
-                final double mean1 = valueMeans[ classNumber1];
-                final double variance1 = valueVariances[ classNumber1];
-                final double mean2 = valueMeans[ classNumber2];
-                final double variance2 = valueVariances[ classNumber2];
+                // Retrieve parameters of the pure tissue cluster this PV cluster is mixing for
+                final double mean1 = valueMeans[ clusterNumber1];
+                final double variance1 = valueVariances[ clusterNumber1];
+                final double mean2 = valueMeans[ clusterNumber2];
+                final double variance2 = valueVariances[ clusterNumber2];
 
-                // Loop over all sub-Gaussians of this PV class
-                Vector likelihoodTimesPriorsForThisPV = (Vector) m_PVLikelihoodTimesPriors.get(pvClassNumber);
+                // Loop over all sub-Gaussians of this PV cluster
+                Vector likelihoodTimesPriorsForThisPV = (Vector) m_PVLikelihoodTimesPriors.get(pvClusterNumber);
                 for (int gaussianNumber = 0; gaussianNumber < numberOfGaussiansPerPV; gaussianNumber++) {
                     double[] likelihoodTimesPrior = (double[]) likelihoodTimesPriorsForThisPV.get(gaussianNumber);
 
@@ -1222,11 +1246,11 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
                         double weight = likelihoodTimesPrior[ i - valMinimum] / m_Evidence[ i - valMinimum] * histogram[ i - valMinimum];
 
                         //DebugMessage( "weight for intensity " + i + " for gaussianNumber " + gaussianNumber + 
-                        //                    " of the combination (" + classNumber1 + ", " + classNumber2 + ") : " + weight );
+                        //                    " of the combination (" + clusterNumber1 + ", " + clusterNumber2 + ") : " + weight );
 
                         final double M = Math.pow(valDownsamplingFactor, 2);
 
-                        // Contribution to class 1
+                        // Contribution to cluster 1
                         final double tau1 = mean1 / M + variance1 / M / variance * (i - mean);
                         final double sigma1 = (variance - variance1 / M) / variance * variance1 / M;
                         mean1Contribution += weight * alpha * tau1;
@@ -1235,7 +1259,7 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
                         variance1ContributionTerm3 += weight * alpha;
                         total1 += weight * alpha;
 
-                        // Contribution to class 2
+                        // Contribution to cluster 2
                         final double tau2 = mean2 / M + variance2 / M / variance * (i - mean);
                         final double sigma2 = (variance - variance2 / M) / variance * variance2 / M;
                         mean2Contribution += weight * (1 - alpha) * tau2;
@@ -1247,22 +1271,22 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
 
 
 
-                    means[ classNumber1] += mean1Contribution;
-                    variancesTerm1[ classNumber1] += variance1ContributionTerm1;
-                    variancesTerm2[ classNumber1] += variance1ContributionTerm2;
-                    variancesTerm3[ classNumber1] += variance1ContributionTerm3;
-                    totalWeights[ classNumber1] += total1;
+                    means[ clusterNumber1] += mean1Contribution;
+                    variancesTerm1[ clusterNumber1] += variance1ContributionTerm1;
+                    variancesTerm2[ clusterNumber1] += variance1ContributionTerm2;
+                    variancesTerm3[ clusterNumber1] += variance1ContributionTerm3;
+                    totalWeights[ clusterNumber1] += total1;
 
-                    means[ classNumber2] += mean2Contribution;
-                    variancesTerm1[ classNumber2] += variance2ContributionTerm1;
-                    variancesTerm2[ classNumber2] += variance2ContributionTerm2;
-                    variancesTerm3[ classNumber2] += variance2ContributionTerm3;
-                    totalWeights[ classNumber2] += total2;
+                    means[ clusterNumber2] += mean2Contribution;
+                    variancesTerm1[ clusterNumber2] += variance2ContributionTerm1;
+                    variancesTerm2[ clusterNumber2] += variance2ContributionTerm2;
+                    variancesTerm3[ clusterNumber2] += variance2ContributionTerm3;
+                    totalWeights[ clusterNumber2] += total2;
 
 
-                    PVPriors[ pvClassNumber] += total1 + total2;
+                    PVPriors[ pvClusterNumber] += total1 + total2;
 
-                } // End loop over all sub-Gaussians of this PV class
+                } // End loop over all sub-Gaussians of this PV cluster
 
             }
 
@@ -1271,36 +1295,36 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
 
         // Use the collected information to update the parameters   
         final double M = Math.pow(valDownsamplingFactor, 2);
-        for (int classNumber = 0; classNumber < numberOfCluster; classNumber++) {
-            valueMeans[ classNumber] = M * means[ classNumber] / totalWeights[ classNumber];
-            valueVariances[ classNumber] = M * (variancesTerm1[ classNumber]
-                    - 2 * valueMeans[ classNumber] / M * variancesTerm2[ classNumber]
-                    + Math.pow(valueMeans[ classNumber] / M, 2) * variancesTerm3[ classNumber])
-                    / totalWeights[ classNumber];
+        for (int clusterNumber = 0; clusterNumber < numberOfCluster; clusterNumber++) {
+            valueMeans[ clusterNumber] = M * means[ clusterNumber] / totalWeights[ clusterNumber];
+            valueVariances[ clusterNumber] = M * (variancesTerm1[ clusterNumber]
+                    - 2 * valueMeans[ clusterNumber] / M * variancesTerm2[ clusterNumber]
+                    + Math.pow(valueMeans[ clusterNumber] / M, 2) * variancesTerm3[ clusterNumber])
+                    / totalWeights[ clusterNumber];
         }
 
         // Update the weights 
         double sum = 0;
-        for (int classNumber = 0; classNumber < numberOfCluster; classNumber++) {
-            sum += purePriors[ classNumber];
+        for (int clusterNumber = 0; clusterNumber < numberOfCluster; clusterNumber++) {
+            sum += purePriors[ clusterNumber];
         }
-        for (pvClassNumber = 0; pvClassNumber < numberOfPVClasses; pvClassNumber++) {
-            sum += PVPriors[ pvClassNumber];
+        for (pvClusterNumber = 0; pvClusterNumber < numberOfPVCluster; pvClusterNumber++) {
+            sum += PVPriors[ pvClusterNumber];
         }
 
 
-        for (int classNumber = 0; classNumber < numberOfCluster; classNumber++) {
-            valuePurePriors[ classNumber] = purePriors[ classNumber] / sum;
+        for (int clusterNumber = 0; clusterNumber < numberOfCluster; clusterNumber++) {
+            valuePurePriors[ clusterNumber] = purePriors[ clusterNumber] / sum;
         }
-        for (pvClassNumber = 0; pvClassNumber < numberOfPVClasses; pvClassNumber++) {
-            valuePVPriors[ pvClassNumber] = PVPriors[ pvClassNumber] / sum;
+        for (pvClusterNumber = 0; pvClusterNumber < numberOfPVCluster; pvClusterNumber++) {
+            valuePVPriors[ pvClusterNumber] = PVPriors[ pvClusterNumber] / sum;
         }
         ShowResultMessage("the calculation not show yet");
 
     }
 
     public void DrawChangingElements(Graphics g) {
-        DrawClassifications(g);
+        DrawClusterResult(g);
         DrawPlot(g);
         DrawChangingGUI(g);
     }
@@ -1326,7 +1350,7 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
 //        m_CostLabel.setText( "- log-likelihood: " + m_Cost );
     }
 
-    public void DrawClassification(Graphics g, double[] likelihoodTimesPrior, int x, int y, int width, int height, int label) {
+    public void DrawClusteringImage(Graphics g, double[] likelihoodTimesPrior, int x, int y, int width, int height, int label) {
         int[] pix = new int[numberOfPixels];
         if (pixAll == null) {
             pixAll = new int[numberOfPixels];
@@ -1439,22 +1463,22 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
 
     }
 
-    public void DrawClassifications(Graphics g) {
-        // Draw pure classification images
-        for (int classNumber = 0; classNumber < numberOfCluster; classNumber++) {
-            double[] likelihoodTimesPrior = (double[]) m_PureLikelihoodTimesPriors.get(classNumber);
-            this.DrawClassification(g, likelihoodTimesPrior, 60 + classNumber * 200, 540, 150, 150, classNumber + 1);
+    public void DrawClusterResult(Graphics g) {
+        // Draw pure clustering images
+        for (int clusterNumber = 0; clusterNumber < numberOfCluster; clusterNumber++) {
+            double[] likelihoodTimesPrior = (double[]) m_PureLikelihoodTimesPriors.get(clusterNumber);
+            this.DrawClusteringImage(g, likelihoodTimesPrior, 60 + clusterNumber * 200, 540, 150, 150, clusterNumber + 1);
         }
 
-        // Draw PV classification images
-        int pvClassNumber = -1;
+        // Draw PV cluster images
+        int pvClusterNumber = -1;
         int pos = 1;
-        for (int classNumber1 = 0; classNumber1 < numberOfCluster; classNumber1++) {
-            for (int classNumber2 = classNumber1 + 1; classNumber2 < numberOfCluster; classNumber2++) {
-                pvClassNumber++;
-                Vector likelihoodTimesPriorsForThisPV = (Vector) m_PVLikelihoodTimesPriors.get(pvClassNumber);
+        for (int clusterNumber1 = 0; clusterNumber1 < numberOfCluster; clusterNumber1++) {
+            for (int clusterNumber2 = clusterNumber1 + 1; clusterNumber2 < numberOfCluster; clusterNumber2++) {
+                pvClusterNumber++;
+                Vector likelihoodTimesPriorsForThisPV = (Vector) m_PVLikelihoodTimesPriors.get(pvClusterNumber);
 
-                // Retrieve likelihoodTimesPrior for this PV clusster by loop over all sub-Gaussians of this PV class, and 
+                // Retrieve likelihoodTimesPrior for this PV clusster by loop over all sub-Gaussians of this PV cluster, and 
                 // adding each Gaussian's contribution
                 double[] summedLikelihoodTimesPrior = new double[numberOfBins];
                 for (int gaussianNumber = 0; gaussianNumber < numberOfGaussiansPerPV; gaussianNumber++) {
@@ -1463,35 +1487,14 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
                         summedLikelihoodTimesPrior[ i - valMinimum] += likelihoodTimesPrior[ i - valMinimum];
                     }
                 }
-//                System.out.println("class number 2 : " + classNumber2 + " " + pos);
+//         
                 // Now draw 
-                this.DrawClassification(g, summedLikelihoodTimesPrior, 60 + pvClassNumber * 200, 720, 150, 150, pos + 3);
+                this.DrawClusteringImage(g, summedLikelihoodTimesPrior, 60 + pvClusterNumber * 200, 720, 150, 150, pos + 3);
                 pos++;
             }
         }
 
     }
-//     private final int m_PlotWidth = panelHistogram.getPreferredSize().width;
-//    private final int m_PlotHeight = panelHistogram.getPreferredSize().height; 494, 210
-    private final int valPlotX = 0;
-    private final int valPlotY = 0;
-//    private final int m_PlotX = panelHistogram.getX();
-//    private final int m_PlotY = panelHistogram.getY();
-//    private final int valPlotWidth = 494;
-//    private final int valPlotHeight = 210;
-    private final int valPlotWidth = 660;
-    private final int valPlotHeight = 210;
-    private Image valuePlotBuffer;
-    private Stroke histogramStroke;
-    private Color histogramColor;
-    private Stroke pureStroke;
-    private Color pureColor;
-    private Stroke subGaussianStroke;
-    private Color subGaussianColor;
-    private Stroke histPVStroke;
-    private Color histPVColor;
-    private Stroke histTotalStroke;
-    private Color hitTotalColor;
 
     public void DrawPlot(Graphics g) {
         // Create plotter and fill it's element in
@@ -1505,10 +1508,10 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
         }
 
         // Create the pure Gaussian plots
-        for (int classNumber = 0; classNumber < numberOfCluster; classNumber++) {
-            final double mean = valueMeans[ classNumber];
-            final double variance = valueVariances[ classNumber];
-            final double prior = valuePurePriors[ classNumber];
+        for (int clusterNumber = 0; clusterNumber < numberOfCluster; clusterNumber++) {
+            final double mean = valueMeans[ clusterNumber];
+            final double variance = valueVariances[ clusterNumber];
+            final double prior = valuePurePriors[ clusterNumber];
             double[] plot = new double[numberOfBins];
             for (int i = valMinimum; i < (valMaximum + 1); i++) {
                 plot[ i - valMinimum] = 1 / Math.sqrt(2 * Math.PI * variance) * Math.exp(-Math.pow(i - mean, 2) / variance / 2) * prior;
@@ -1519,26 +1522,26 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
         }
 
         // Create the PV Gaussian plots
-        int pvClassNumber = -1;
-        for (int classNumber1 = 0; classNumber1 < numberOfCluster; classNumber1++) {
-            for (int classNumber2 = classNumber1 + 1; classNumber2 < numberOfCluster; classNumber2++) {
-                pvClassNumber++;
+        int pvClusterNumber = -1;
+        for (int clusterNumber1 = 0; clusterNumber1 < numberOfCluster; clusterNumber1++) {
+            for (int clusterNumber2 = clusterNumber1 + 1; clusterNumber2 < numberOfCluster; clusterNumber2++) {
+                pvClusterNumber++;
 
-                // Retrieve parameters of the pure tissue classes this PV class is mixing for
-                final double mean1 = valueMeans[ classNumber1];
-                final double variance1 = valueVariances[ classNumber1];
-                final double mean2 = valueMeans[ classNumber2];
-                final double variance2 = valueVariances[ classNumber2];
+                // Retrieve parameters of the pure tissue cluster this PV clusteris mixing for
+                final double mean1 = valueMeans[ clusterNumber1];
+                final double variance1 = valueVariances[ clusterNumber1];
+                final double mean2 = valueMeans[ clusterNumber2];
+                final double variance2 = valueVariances[ clusterNumber2];
 
-                //DebugMessage( "pvClassNumber: " + pvClassNumber );
+                //DebugMessage( "pvClusterNumber: " + pvClusterNumber );
 
-                final double prior = valuePVPriors[ pvClassNumber] / numberOfGaussiansPerPV;
+                final double prior = valuePVPriors[ pvClusterNumber] / numberOfGaussiansPerPV;
 
                 //DebugMessage( "prior: " + prior );
 
 
 
-                // Loop over all sub-Gaussians of this PV class
+                // Loop over all sub-Gaussians of this PV cluster
                 double[] pvPlot = new double[numberOfBins];
                 for (int i = valMinimum; i < (valMaximum + 1); i++) {
                     pvPlot[ i - valMinimum] = 0;
@@ -1589,7 +1592,7 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
     }
 
     public void SetPrior(int number, double newPrior) {
-        // Check which class we are referring to, and get its current value
+        // Check which cluster we are referring to, and get its current value
         double oldPrior = 0;
         if (number < numberOfCluster) {
             oldPrior = valuePurePriors[ number];
@@ -1606,11 +1609,11 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
 
         // Take certain fraction off other priors in order to make the required change
         double fraction = (newPrior - oldPrior) / (1 - oldPrior);
-        for (int classNumber = 0; classNumber < numberOfCluster; classNumber++) {
-            valuePurePriors[ classNumber] -= fraction * valuePurePriors[ classNumber];
+        for (int clusterNumber = 0; clusterNumber < numberOfCluster; clusterNumber++) {
+            valuePurePriors[ clusterNumber] -= fraction * valuePurePriors[ clusterNumber];
         }
-        for (int pvClassNumber = 0; pvClassNumber < numberOfCluster; pvClassNumber++) {
-            valuePVPriors[ pvClassNumber] -= fraction * valuePVPriors[ pvClassNumber];
+        for (int pvClusterNumber = 0; pvClusterNumber < numberOfCluster; pvClusterNumber++) {
+            valuePVPriors[ pvClusterNumber] -= fraction * valuePVPriors[ pvClusterNumber];
         }
 
         // Set the prior to the specified value
@@ -1676,7 +1679,6 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
         textFieldPvPrior2.setText("100");
 
     }
-    private EMThread emRunner;
 
     public void StartEM() {
         // Make sure we're not running already
