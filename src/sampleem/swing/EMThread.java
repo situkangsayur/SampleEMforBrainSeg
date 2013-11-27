@@ -33,9 +33,9 @@ public class EMThread extends Thread {
     }
 
     public void run() {
-        view.ShowResultMessage("Starting EM iterations");
+        view.showResultMessage("Starting EM iterations");
 
-        view.CalculateExpectation();
+        view.calculateExpectation();
 
         //for ( int iterationNumber = 0; iterationNumber < 400; iterationNumber++ )
         for (int iterationNumber = 0;; iterationNumber++) {
@@ -46,14 +46,14 @@ public class EMThread extends Thread {
             }
 
             // Save the old cost
-            double oldCost = view.getM_Cost();
+            double oldCost = view.getMaxLikelihood();
 
             // Do one Expectation-Maximization iteration
 //            view.DebugMessage("iterationNumber: " + iterationNumber);
 //            view.DebugMessage("cost old " + oldCost);
 
-            view.CalculateMaximization();
-            view.CalculateExpectation();
+            view.calculateMaximization();
+            view.calculateExpectation();
 
             // Draw result
             if ((iterationNumber % 40) == 0) {
@@ -62,23 +62,23 @@ public class EMThread extends Thread {
                 //getToolkit().sync();
             }
 
-            view.DebugMessage("cost new " + view.getM_Cost());
+            view.debugMessage("cost new " + view.getMaxLikelihood());
 
             // Check if we have converged
-            if (view.getM_Cost() > oldCost) {
+            if (view.getMaxLikelihood() > oldCost) {
                 // Going uphill due to numerical errors
 
-                view.ShowResultMessage("Going uphill");
-                view.ShowResultMessage("oldCost: " + oldCost);
-                view.ShowResultMessage("m_Cost: " + view.getM_Cost());
+                view.showResultMessage("Going uphill");
+                view.showResultMessage("oldCost: " + oldCost);
+                view.showResultMessage("m_Cost: " + view.getMaxLikelihood());
 
                 m_StopRequested = true;
-            } else if (((oldCost - view.getM_Cost()) / (oldCost + view.getM_Cost()) * 2) <= 1e-9) {
+            } else if (((oldCost - view.getMaxLikelihood()) / (oldCost + view.getMaxLikelihood()) * 2) <= 1e-9) {
                 // Converged
 
-                view.ShowResultMessage("Converged: " + ((oldCost - view.getM_Cost()) / (oldCost + view.getM_Cost()) * 2));
-                view.ShowResultMessage("oldCost: " + oldCost);
-                view.ShowResultMessage("m_Cost: " + view.getM_Cost());
+                view.showResultMessage("Converged: " + ((oldCost - view.getMaxLikelihood()) / (oldCost + view.getMaxLikelihood()) * 2));
+                view.showResultMessage("oldCost: " + oldCost);
+                view.showResultMessage("m_Cost: " + view.getMaxLikelihood());
 
                 m_StopRequested = true;
             }

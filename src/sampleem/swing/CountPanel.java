@@ -21,22 +21,14 @@
 package sampleem.swing;
 
 import java.awt.BasicStroke;
-import java.awt.Checkbox;
-import java.awt.Choice;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
-import java.awt.Label;
 import java.awt.MediaTracker;
 import java.awt.Stroke;
-import java.awt.TextArea;
-import java.awt.TextField;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.image.BufferedImage;
-import static java.awt.image.ImageObserver.WIDTH;
 import java.awt.image.MemoryImageSource;
 import java.awt.image.Raster;
 import java.io.File;
@@ -52,11 +44,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
-import javax.swing.JCheckBox;
 import javax.swing.JTextField;
 
 import sampleem.swing.listener.Listener;
-import sun.nio.cs.MS1250;
 
 /**
  *
@@ -104,10 +94,10 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
     private final int numberOfCluster = 3;
     //calculate expectation
     //============================================
-    private double[] m_Evidence;
+    private double[] evidenceVal;
     private Vector m_PureLikelihoodTimesPriors;
     private Vector m_PVLikelihoodTimesPriors;
-    private double m_Cost = 0;
+    private double maxLikelihood = 0;
     //DrawPlot curve
     //=============================================
     //     private final int m_PlotWidth = panelHistogram.getPreferredSize().width;
@@ -695,20 +685,20 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
 
     private void buttonInitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonInitActionPerformed
         // TODO add your handling code here:
-        this.StopEM();
-        this.SetInitialParametersToDefault();
+        this.stopEM();
+        this.setInitialParametersToDefault();
         paintGraph();
     }//GEN-LAST:event_buttonInitActionPerformed
 
     private void buttonStartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonStartActionPerformed
         // TODO add your handling code here:
-        this.StartEM();
+        this.startEM();
         paintGraph();
     }//GEN-LAST:event_buttonStartActionPerformed
 
     private void comboImageItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_comboImageItemStateChanged
         // TODO add your handling code here:
-        DebugMessage(comboImage.getSelectedIndex() + " : " + comboImage.getSelectedItem());
+        debugMessage(comboImage.getSelectedIndex() + " : " + comboImage.getSelectedItem());
         pixAll = null;
         try {
             citraSrc = ImageIO.read(new File(urlDataset.get(comboImage.getSelectedIndex()).getUri()));
@@ -726,42 +716,42 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
     private void textFieldMean0ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textFieldMean0ActionPerformed
         // TODO add your handling code here:
         valueMeans[0] = Double.parseDouble(textFieldMean0.getText());
-        this.CalculateExpectation();
+        this.calculateExpectation();
         paintGraph();
     }//GEN-LAST:event_textFieldMean0ActionPerformed
 
     private void textFieldMean1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textFieldMean1ActionPerformed
         // TODO add your handling code here:
         valueMeans[1] = Double.parseDouble(textFieldMean1.getText());
-        this.CalculateExpectation();
+        this.calculateExpectation();
         paintGraph();
     }//GEN-LAST:event_textFieldMean1ActionPerformed
 
     private void textFieldMean2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textFieldMean2ActionPerformed
         // TODO add your handling code here:
         valueMeans[2] = Double.parseDouble(textFieldMean2.getText());
-        this.CalculateExpectation();
+        this.calculateExpectation();
         paintGraph();
     }//GEN-LAST:event_textFieldMean2ActionPerformed
 
     private void textFieldSigma0ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textFieldSigma0ActionPerformed
         // TODO add your handling code here:
         valueVariances[0] = Math.pow(Double.parseDouble(textFieldSigma0.getText()), 2);
-        this.CalculateExpectation();
+        this.calculateExpectation();
         paintGraph();
     }//GEN-LAST:event_textFieldSigma0ActionPerformed
 
     private void textFieldSigma1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textFieldSigma1ActionPerformed
         // TODO add your handling code here:
         valueVariances[1] = Math.pow(Double.parseDouble(textFieldSigma1.getText()), 2);
-        this.CalculateExpectation();
+        this.calculateExpectation();
         paintGraph();
     }//GEN-LAST:event_textFieldSigma1ActionPerformed
 
     private void textFieldSigma2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textFieldSigma2ActionPerformed
         // TODO add your handling code here:
         valueVariances[2] = Math.pow(Double.parseDouble(textFieldSigma2.getText()), 2);
-        this.CalculateExpectation();
+        this.calculateExpectation();
         paintGraph();
     }//GEN-LAST:event_textFieldSigma2ActionPerformed
 
@@ -789,7 +779,7 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
 
     private void buttonStopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonStopActionPerformed
         // TODO add your handling code here:
-        StopEM();
+        stopEM();
     }//GEN-LAST:event_buttonStopActionPerformed
 
     private void textFieldDownSamplingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textFieldDownSamplingActionPerformed
@@ -807,7 +797,7 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
             valDownsamplingFactor = 5;
         }
         textFieldDownSampling.setText("" + valDownsamplingFactor);
-        this.SetInitialParametersToDefault();
+        this.setInitialParametersToDefault();
         paintGraph();
     }//GEN-LAST:event_textFieldDownSamplingActionPerformed
 
@@ -895,7 +885,7 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
 //            }
 
             try {
-                DebugMessage(i + ":" + baseUrl.toString() + "/imageFIleName" + i);
+                debugMessage(i + ":" + baseUrl.toString() + "/imageFIleName" + i);
                 citraSrc = ImageIO.read(new File(new URI(baseUrl.toString() + "/imageFIleName" + i + ".jpg")));
                 DataSetEntity temp = new DataSetEntity();
                 temp.setName("Image-" + i);
@@ -905,7 +895,7 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
 
             } catch (IOException ex) {
                 ex.printStackTrace();
-                DebugMessage(ex.getMessage());
+                debugMessage(ex.getMessage());
                 break;
             } catch (URISyntaxException ex) {
                 Logger.getLogger(CountPanel.class.getName()).log(Level.SEVERE, null, ex);
@@ -935,8 +925,8 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
             e.printStackTrace();
         }
 
-        this.SetUpGUI();
-        DebugMessage(Integer.toString(comboImage.getSelectedIndex()));
+        this.setUpGraphics();
+        debugMessage(Integer.toString(comboImage.getSelectedIndex()));
         this.SetImage(comboImage.getSelectedIndex());
 
     }
@@ -987,8 +977,8 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
                 valMinimum = nPixelData[ i];
             }
         }
-        DebugMessage("valMinimum: " + valMinimum);
-        DebugMessage("valMaximum: " + valMaximum);
+        debugMessage("valMinimum: " + valMinimum);
+        debugMessage("valMaximum: " + valMaximum);
 
 
         // Build histogram
@@ -1018,11 +1008,11 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
         }
 
         // 
-        this.SetInitialParametersToDefault();
+        this.setInitialParametersToDefault();
         paintGraph();
     }
 
-    public void SetInitialParametersToDefault() {
+    public void setInitialParametersToDefault() {
         // Calculate number of Gaussians per PV cluster
         numberOfGaussiansPerPV = valDownsamplingFactor * valDownsamplingFactor - 1;
         //DebugMessage( "m_NumberOfGaussiansPerPV: " + m_NumberOfGaussiansPerPV );
@@ -1054,11 +1044,11 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
 
 
         // Depending on the contrast, swap initial means to keep the labels in the applet (WM/GM/CSF) relevant
-        DebugMessage("Adjusting for contrast " + contrast);
-        ShowResultMessage("Adjusting for contrast " + contrast);
+        debugMessage("Adjusting for contrast " + contrast);
+        showResultMessage("Adjusting for contrast " + contrast);
         String compareString = "imageFileName2";
         if (contrast.matches(compareString)) {
-            DebugMessage("swapping");
+            debugMessage("swapping");
             double tmp = valueMeans[ 0];
             valueMeans[ 0] = valueMeans[ 2];
             valueMeans[ 2] = tmp;
@@ -1066,17 +1056,17 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
         }
 
         // Recalculate the initial cluster
-        CalculateExpectation();
+        calculateExpectation();
     }
 
-    public void CalculateExpectation() {
+    public void calculateExpectation() {
         //
         // Expectation step: cluster
-        DebugMessage("m number bins :" + numberOfBins);
-        ShowResultMessage("====Expectation Calc=====");
-        m_Evidence = new double[numberOfBins];
+        debugMessage("m number bins :" + numberOfBins);
+        showResultMessage("====Expectation Calc=====");
+        evidenceVal = new double[numberOfBins];
         for (int i = valMinimum; i < (valMaximum + 1); i++) {
-            m_Evidence[ i - valMinimum] = 0;
+            evidenceVal[ i - valMinimum] = 0;
         }
 
         // Calculate the contributions of the pure cluster
@@ -1090,16 +1080,16 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
             for (int i = valMinimum; i < (valMaximum + 1); i++) {
                 likelihoodTimesPrior[ i - valMinimum] = 1 / Math.sqrt(2 * Math.PI * variance)
                         * Math.exp(-Math.pow(i - mean, 2) / variance / 2) * prior;
-                ShowResultMessage("Likelihood : " + likelihoodTimesPrior[ i - valMinimum]);
-                m_Evidence[ i - valMinimum] += likelihoodTimesPrior[ i - valMinimum];
-                ShowResultMessage("Evidence : " + m_Evidence[ i - valMinimum]);
+                showResultMessage("Likelihood : " + likelihoodTimesPrior[ i - valMinimum]);
+                evidenceVal[ i - valMinimum] += likelihoodTimesPrior[ i - valMinimum];
+                showResultMessage("Evidence : " + evidenceVal[ i - valMinimum]);
             }
             // 
             m_PureLikelihoodTimesPriors.add(likelihoodTimesPrior);
-            ShowResultMessage("likelihoodTimesPrior : " + likelihoodTimesPrior);
+            showResultMessage("likelihoodTimesPrior : " + likelihoodTimesPrior);
         }
 
-        ShowResultMessage("===PV Cluster Calc===");
+        showResultMessage("===PV Cluster Calc===");
         // Calculate the contributions of the PV cluster
         m_PVLikelihoodTimesPriors = new Vector();
         int pvClusterNumber = -1;
@@ -1127,14 +1117,14 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
                     for (int i = valMinimum; i < (valMaximum + 1); i++) {
                         final double tmp = 1 / Math.sqrt(2 * Math.PI * variance) * Math.exp(-Math.pow(i - mean, 2) / variance / 2) * prior;
                         likelihoodTimesPrior[ i - valMinimum] = tmp;
-                        m_Evidence[ i - valMinimum] += tmp;
+                        evidenceVal[ i - valMinimum] += tmp;
                     }
-                    ShowResultMessage("likelihoodTimesPrior : " + likelihoodTimesPrior);
+                    showResultMessage("likelihoodTimesPrior : " + likelihoodTimesPrior);
                     likelihoodTimesPriorsForThisPV.add(likelihoodTimesPrior);
                 }
-                ShowResultMessage("===============================");
+                showResultMessage("===============================");
                 m_PVLikelihoodTimesPriors.add(likelihoodTimesPriorsForThisPV);
-                ShowResultMessage("PV likelihoodTimesPrior : " + likelihoodTimesPriorsForThisPV);
+                showResultMessage("PV likelihoodTimesPrior : " + likelihoodTimesPriorsForThisPV);
             }
 
         }
@@ -1144,20 +1134,20 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
         //
         // Show the current value of the objective function
         //
-        m_Cost = 0;
+        maxLikelihood = 0;
         for (int i = valMinimum; i < (valMaximum + 1); i++) {
-            m_Cost -= Math.log(m_Evidence[ i - valMinimum]) * histogram[ i - valMinimum];
-            DebugMessage(" m minimum : " + valMinimum);
-            DebugMessage("m eviden :" + m_Evidence[ i - valMinimum] + " --- " + "m histogram :" + histogram[ i - valMinimum]);
-            DebugMessage("log : " + Math.log(m_Evidence[ i - valMinimum]) * histogram[ i - valMinimum]);
-            DebugMessage("looping cost: " + m_Cost);
+            maxLikelihood -= Math.log(evidenceVal[ i - valMinimum]) * histogram[ i - valMinimum];
+            debugMessage(" m minimum : " + valMinimum);
+            debugMessage("m eviden :" + evidenceVal[ i - valMinimum] + " --- " + "m histogram :" + histogram[ i - valMinimum]);
+            debugMessage("log : " + Math.log(evidenceVal[ i - valMinimum]) * histogram[ i - valMinimum]);
+            debugMessage("looping cost: " + maxLikelihood);
         }
-        m_Cost *= numberOfActivePixels;
-        DebugMessage("Current cost: " + m_Cost);
+        maxLikelihood *= numberOfActivePixels;
+        debugMessage("Current cost: " + maxLikelihood);
     }
 
-    public void CalculateMaximization() {
-        ShowResultMessage("===Maximization Calc===");
+    public void calculateMaximization() {
+        showResultMessage("===Maximization Calc===");
         // 
         // Maximization step: update the parameters
         //
@@ -1194,7 +1184,7 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
             final double tau = variance * (M - 1) / Math.pow(M, 2);
             //final double tau = 0;
             for (int i = valMinimum; i < (valMaximum + 1); i++) {
-                double weight = likelihoodTimesPrior[ i - valMinimum] / m_Evidence[ i - valMinimum] * histogram[ i - valMinimum];
+                double weight = likelihoodTimesPrior[ i - valMinimum] / evidenceVal[ i - valMinimum] * histogram[ i - valMinimum];
                 meanContribution += i / M * weight;
                 varianceContributionTerm1 += (tau + Math.pow(i / M, 2)) * weight;
                 varianceContributionTerm2 += i / M * weight;
@@ -1244,7 +1234,7 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
                     double variance2ContributionTerm3 = 0;
                     double total2 = 0;
                     for (int i = valMinimum; i < (valMaximum + 1); i++) {
-                        double weight = likelihoodTimesPrior[ i - valMinimum] / m_Evidence[ i - valMinimum] * histogram[ i - valMinimum];
+                        double weight = likelihoodTimesPrior[ i - valMinimum] / evidenceVal[ i - valMinimum] * histogram[ i - valMinimum];
 
                         //DebugMessage( "weight for intensity " + i + " for gaussianNumber " + gaussianNumber + 
                         //                    " of the combination (" + clusterNumber1 + ", " + clusterNumber2 + ") : " + weight );
@@ -1320,17 +1310,17 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
         for (pvClusterNumber = 0; pvClusterNumber < numberOfPVCluster; pvClusterNumber++) {
             valuePVPriors[ pvClusterNumber] = PVPriors[ pvClusterNumber] / sum;
         }
-        ShowResultMessage("the calculation not show yet");
+        showResultMessage("the calculation not show yet");
 
     }
 
-    public void DrawChangingElements(Graphics g) {
-        DrawClusterResult(g);
-        DrawPlot(g);
-        DrawChangingGUI(g);
+    public void drawChangingElements(Graphics g) {
+        drawClusterResult(g);
+        drawPlot(g);
+        drawChangingGUI(g);
     }
 
-    public void DrawChangingGUI(Graphics g) {
+    public void drawChangingGUI(Graphics g) {
         // Update GUI components
         textFieldMean0.setText("" + valueMeans[ 0]);
         textFieldMean1.setText("" + valueMeans[ 1]);
@@ -1351,7 +1341,7 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
 //        m_CostLabel.setText( "- log-likelihood: " + m_Cost );
     }
 
-    public void DrawClusteringImage(Graphics g, double[] likelihoodTimesPrior, int x, int y, int width, int height, int label) {
+    public void drawClusteringImage(Graphics g, double[] likelihoodTimesPrior, int x, int y, int width, int height, int label) {
         int[] pix = new int[numberOfPixels];
         if (pixAll == null) {
             pixAll = new int[numberOfPixels];
@@ -1368,7 +1358,7 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
             } else {
 
                 final int histogramEntry = nPixelData[ i] - valMinimum;
-                red = (int) (likelihoodTimesPrior[ histogramEntry] / (m_Evidence[ histogramEntry] + 0.0000001) * 255);
+                red = (int) (likelihoodTimesPrior[ histogramEntry] / (evidenceVal[ histogramEntry] + 0.0000001) * 255);
 //                System.out.println("diff : " + red);
             }
 
@@ -1464,11 +1454,11 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
 
     }
 
-    public void DrawClusterResult(Graphics g) {
+    public void drawClusterResult(Graphics g) {
         // Draw pure clustering images
         for (int clusterNumber = 0; clusterNumber < numberOfCluster; clusterNumber++) {
             double[] likelihoodTimesPrior = (double[]) m_PureLikelihoodTimesPriors.get(clusterNumber);
-            this.DrawClusteringImage(g, likelihoodTimesPrior, 60 + clusterNumber * 200, 540, 150, 150, clusterNumber + 1);
+            this.drawClusteringImage(g, likelihoodTimesPrior, 60 + clusterNumber * 200, 540, 150, 150, clusterNumber + 1);
         }
 
         // Draw PV cluster images
@@ -1490,14 +1480,14 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
                 }
 //         
                 // Now draw 
-                this.DrawClusteringImage(g, summedLikelihoodTimesPrior, 60 + pvClusterNumber * 200, 720, 150, 150, pos + 3);
+                this.drawClusteringImage(g, summedLikelihoodTimesPrior, 60 + pvClusterNumber * 200, 720, 150, 150, pos + 3);
                 pos++;
             }
         }
 
     }
 
-    public void DrawPlot(Graphics g) {
+    public void drawPlot(Graphics g) {
         // Create plotter and fill it's element in
         //XYPlot  plotter = new XYPlot( plotX, plotY, plotWidth, plotHeight );
         XYPlot plotter = new XYPlot(0, 0, valPlotWidth, valPlotHeight);
@@ -1574,15 +1564,15 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
 
         plotter.Add(totalPlot, hitTotalColor, histTotalStroke);
 
-        // Now we're ready to fill up the buffer. First the plot        
-        //plotter.Plot( g );
+        
         plotter.Plot(valuePlotBuffer.getGraphics());
 
-        // Now the -logLikelihood
+        
         valuePlotBuffer.getGraphics().setColor(Color.black);
-        valuePlotBuffer.getGraphics().drawString("- log-likelihood: " + m_Cost, 10, 20);
+       
+        valuePlotBuffer.getGraphics().drawString("log likelihood: " + maxLikelihood, 10, 20);
 
-        // Finally, display the buffer
+        
 //        g.drawImage(m_PlotBuffer, m_PlotX, m_PlotY, this);
         BufferedImage bfrImage = new BufferedImage(valPlotWidth, valPlotHeight, BufferedImage.TYPE_INT_RGB);
         Graphics bg = bfrImage.getGraphics();
@@ -1624,11 +1614,11 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
             valuePVPriors[ number - numberOfCluster] = newPrior;
         }
 
-        this.CalculateExpectation();
+        this.calculateExpectation();
         paintGraph();
     }
 
-    public void SetUpGUI() {
+    public void setUpGraphics() {
         // Define appearance of the plotted histogram lines
         histogramStroke = new BasicStroke();
         histogramColor = new Color(128, 128, 128);
@@ -1651,7 +1641,7 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
 //        m_PlotBuffer = createImage(m_PlotWidth, m_PlotHeighth);
         valuePlotBuffer = createImage(valPlotWidth, valPlotHeight);
         if (valuePlotBuffer == null) {
-            DebugMessage("Buffer plot == null");
+            debugMessage("Buffer plot == null");
         }
 
 
@@ -1681,12 +1671,12 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
 
     }
 
-    public void StartEM() {
+    public void startEM() {
         // Make sure we're not running already
         if (emRunner != null) {
             // 
             if (emRunner.isAlive()) {
-                DebugMessage("Have already a thread doing our work");
+                debugMessage("Have already a thread doing our work");
                 return;
             }
         }
@@ -1698,12 +1688,12 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
         emRunner.startThread();
     }
 
-    public double getM_Cost() {
-        return m_Cost;
+    public double getMaxLikelihood() {
+        return maxLikelihood;
     }
 
-    public void StopEM() {
-        DebugMessage("Trying to stop the solver");
+    public void stopEM() {
+        debugMessage("Trying to stop the solver");
 
         if (emRunner == null) {
             return;
@@ -1722,7 +1712,7 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
     }
 
     public void itemStateChanged(ItemEvent e) {
-        this.StopEM();
+        this.stopEM();
         this.SetImage(comboImage.getSelectedIndex());
 
     }
@@ -1734,22 +1724,23 @@ public class CountPanel extends javax.swing.JPanel implements Listener {
 
 //        graph1D = panelHistogram.getGraph();
         graph1D = new BufferedImage(panelHistogram.getPreferredSize().width, panelHistogram.getPreferredSize().height, BufferedImage.TYPE_INT_RGB).createGraphics();
+
         if (graph1D == null) {
-            DebugMessage("graphnya null gan");
+            debugMessage("graphnya null gan");
         }
-        DrawChangingElements(graph1D);
+        drawChangingElements(graph1D);
 //        panelHistogram.paintGraph();
 //        panelHistogram.revalidate();
     }
 
-    public void DebugMessage(String message) {
+    public void debugMessage(String message) {
         // Comment this out for final release of the Applet
         //DebugMessage( message );
 //        System.out.println(message);
 //        textAreaRest.getTextArea().append(message);
     }
 
-    public void ShowResultMessage(String message) {
+    public void showResultMessage(String message) {
         // Comment this out for final release of the Applet
         //DebugMessage( message );
 //        System.out.println(message);
