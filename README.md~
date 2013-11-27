@@ -1,7 +1,7 @@
 SampleEMforBrainSeg
 ===================
 
-Sample EM Algorithm for Brain Segmentation from http://nmr.mgh.harvard.edu/~koen/VanLeemputTMI2003.pdf
+Sample EM Algorithm for Brain Segmentation from http://nmr.mgh.harvard.edu/~koen/PVEM.html
 
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
